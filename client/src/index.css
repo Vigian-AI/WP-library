@@ -1,0 +1,182 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* ─── Colours ─── */
+  --color-background:               #f8fafc;
+  --color-surface:                  #ffffff;
+  --color-surface-dim:              #f1f5f9;
+  --color-surface-bright:           #ffffff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low:    #f8fafc;
+  --color-surface-container:        #f1f5f9;
+  --color-surface-container-high:   #e2e8f0;
+  --color-surface-container-highest:#cbd5e1;
+  --color-surface-variant:          #e2e8f0;
+  --color-surface-tint:             #1e3a8a;
+
+  --color-on-background:            #0f172a;
+  --color-on-surface:               #0f172a;
+  --color-on-surface-variant:       #475569;
+  --color-outline:                  #cbd5e1;
+  --color-outline-variant:          #e2e8f0;
+
+  --color-primary:                  #1e3a8a;
+  --color-primary-fixed:            #dbeafe;
+  --color-primary-fixed-dim:        #1e40af;
+  --color-primary-container:        #dbeafe;
+  --color-on-primary:               #ffffff;
+  --color-on-primary-container:     #1e3a8a;
+  --color-on-primary-fixed:         #1e3a8a;
+  --color-on-primary-fixed-variant: #1e40af;
+  --color-inverse-primary:          #3b82f6;
+
+  --color-secondary:                #64748b;
+  --color-secondary-container:      #f1f5f9;
+  --color-on-secondary:             #ffffff;
+  --color-on-secondary-container:   #334155;
+  --color-secondary-fixed:          #cbd5e1;
+  --color-secondary-fixed-dim:      #475569;
+  --color-on-secondary-fixed:       #f8fafc;
+  --color-on-secondary-fixed-variant:#1e293b;
+
+  --color-tertiary:                 #0ea5e9;
+  --color-tertiary-container:       #e0f2fe;
+  --color-on-tertiary:              #ffffff;
+  --color-on-tertiary-container:    #0c4a6e;
+  --color-tertiary-fixed:           #bae6fd;
+  --color-tertiary-fixed-dim:       #0284c7;
+  --color-on-tertiary-fixed:        #f0f9ff;
+  --color-on-tertiary-fixed-variant: #075985
+
+  --color-error:                    #ef4444;
+  --color-error-container:          #fee2e2;
+  --color-on-error:                 #ffffff;
+  --color-on-error-container:       #991b1b;
+
+  --color-inverse-surface:          #0f172a;
+  --color-inverse-on-surface:       #f8fafc;
+
+  --spacing-space-xs:           8px;
+  --spacing-space-sm:           16px;
+  --spacing-space-md:           24px;
+  --spacing-space-lg:           32px;
+  --spacing-space-xl:           48px;
+  --spacing-gutter:             24px;
+  --spacing-margin-mobile:      16px;
+  --spacing-margin-desktop:     40px;
+  --spacing-base:               4px;
+
+  --width-form:   400px;
+  --width-modal:  480px;
+  --width-prose:  42rem;
+  --width-detail: 56rem;
+  --width-wide:   72rem;
+  --width-page:   80rem;
+  --width-app:    1400px;
+}
+
+/* ─── Typography utility classes ─── */
+/* These let the existing JSX classes (text-headline-xl etc.) work properly  */
+.text-headline-xl  { font-size: 2rem;      line-height: 1.2;  font-weight: 700; }
+.text-headline-lg  { font-size: 1.5rem;    line-height: 1.3;  font-weight: 700; }
+.text-headline-md  { font-size: 1.25rem;   line-height: 1.35; font-weight: 600; }
+.text-body-lg      { font-size: 1.0625rem; line-height: 1.6;  font-weight: 400; }
+.text-body-md      { font-size: 0.9375rem; line-height: 1.6;  font-weight: 400; }
+.text-body-sm      { font-size: 0.875rem;  line-height: 1.55; font-weight: 400; }
+.text-label-md     { font-size: 0.75rem;   line-height: 1.4;  font-weight: 500; }
+
+/* font-* weight helpers used in JSX */
+.font-headline-xl  { font-weight: 700; }
+.font-headline-lg  { font-weight: 700; }
+.font-headline-md  { font-weight: 600; }
+.font-body-lg      { font-weight: 400; }
+.font-body-md      { font-weight: 400; }
+.font-body-sm      { font-weight: 400; }
+.font-label-md     { font-weight: 500; }
+
+/* ─── Book card hover ─── */
+.book-card-hover {
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.25s ease,
+                box-shadow 0.25s ease;
+}
+.book-card-hover:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-primary);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+/* ─── Glass panel ─── */
+.glass-panel {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--color-background); }
+::-webkit-scrollbar-thumb { background: var(--color-surface-variant); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-surface-container-high); }
+
+/* ─── Base ─── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-on-surface);
+    min-height: 100vh;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+}
+
+/* Improve form input readability */
+input, textarea, select {
+    color: var(--color-on-surface);
+    font-family: inherit;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #8a8070;
+    opacity: 1;
+}
+
+/* Select option colors (browser permitting) */
+select option {
+    background-color: #1e2840;
+    color: #e8eeff;
+}
+
+/* Focus ring override for better visibility */
+*:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* ─── Max-width utility classes ─────────────────────────────────────────── */
+/* Use these instead of max-w-sm/md/xl etc. which collide with spacing tokens */
+
+/* Auth card (login / register) */
+.mw-form-sm  { max-width: var(--width-form-sm);    }
+/* Modal */
+.mw-form-md  { max-width: var(--width-form-md);    }
+/* Content areas */
+.mw-prose    { max-width: var(--width-content-sm); }   /* 36rem — hero text */
+.mw-content  { max-width: var(--width-content-md); }   /* 56rem — detail pages */
+.mw-wide     { max-width: var(--width-content-lg); }   /* 72rem — dashboard */
+.mw-page     { max-width: var(--width-content-xl); }   /* 80rem — admin pages */
+
+/* Search bar in TopNavBar */
+.mw-search   { max-width: 32rem; }
+
+/* Inline helper: replaces max-w-sm in search input fields */
+.mw-search-input { max-width: 24rem; }
