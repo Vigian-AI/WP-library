@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { wishlistAPI, bookAPI } from '../services/api';
-import TopNavBar from '../components/TopNavBar';
 import BookCard from '../components/BookCard';
 import Icon from '../components/Icon';
 import { useAuth } from '../hooks/useAuth';
@@ -39,19 +38,17 @@ const Wishlist = () => {
             await bookAPI.borrow(bookId);
             fetchWishlist();
         } catch (error) {
-            alert(error.response?.data?.error || 'Failed to borrow book');
+            alert(error.response?.data?.error || 'Gagal meminjam buku');
         }
     };
 
     return (
         <div className="min-h-screen flex flex-col bg-background">
-            <TopNavBar user={user} onSearch={() => {}} />
-
             <main className="flex-1 p-lg">
                 <div className="max-w-6xl mx-auto">
                     <div className="mb-lg">
-                        <h2 className="text-headline-lg text-on-surface">My Wishlist</h2>
-                        <p className="text-body-sm text-on-surface-variant">Books you want to read later</p>
+                        <h2 className="text-headline-lg text-on-surface">Daftar Favorit Saya</h2>
+                        <p className="text-body-sm text-on-surface-variant">Buku-buku yang ingin Anda baca nanti</p>
                     </div>
 
                     {loading ? (
@@ -62,7 +59,7 @@ const Wishlist = () => {
                         <div className="text-center py-12">
                             <Icon name="favorite" size={48} className="text-on-surface-variant" />
                             <p className="text-body-md text-on-surface-variant mt-4">
-                                Your wishlist is empty. Browse the catalog to add books.
+                                Daftar favorit Anda kosong. Jelajahi katalog untuk menambahkan buku.
                             </p>
                         </div>
                     ) : (
@@ -73,7 +70,7 @@ const Wishlist = () => {
                                     <button
                                         onClick={() => handleRemove(item.book_id)}
                                         className="absolute top-2 left-2 w-8 h-8 bg-error/80 hover:bg-error text-white rounded-full flex items-center justify-center z-10 transition-colors"
-                                        title="Remove from wishlist"
+                                        title="Hapus dari favorit"
                                     >
                                         <Icon name="close" size={16} className="text-white" />
                                     </button>

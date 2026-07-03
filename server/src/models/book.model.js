@@ -11,9 +11,9 @@ class BookModel extends BaseModel {
             SELECT b.*, c.name as category_name
             FROM books b
             LEFT JOIN categories c ON b.category_id = c.id
-            WHERE b.title ILIKE $1 OR b.author ILIKE $1 OR b.isbn ILIKE $1
+            WHERE b.title LIKE ? OR b.author LIKE ? OR b.isbn LIKE ?
             ORDER BY b.title ASC
-        `, [searchTerm]);
+        `, [searchTerm, searchTerm, searchTerm]);
         return result.rows;
     }
 
@@ -44,7 +44,7 @@ class BookModel extends BaseModel {
             LEFT JOIN loans l ON b.id = l.book_id
             GROUP BY b.id, c.name
             ORDER BY borrow_count DESC, b.rating DESC
-            LIMIT $1
+            LIMIT ?
         `, [limit]);
         return result.rows;
     }
@@ -55,7 +55,7 @@ class BookModel extends BaseModel {
             FROM books b
             LEFT JOIN categories c ON b.category_id = c.id
             ORDER BY b.created_at DESC
-            LIMIT $1
+            LIMIT ?
         `, [limit]);
         return result.rows;
     }
@@ -65,47 +65,50 @@ class BookModel extends BaseModel {
             SELECT b.*, c.name as category_name
             FROM books b
             LEFT JOIN categories c ON b.category_id = c.id
-            WHERE b.id = $1
+            WHERE b.id = ?
         `, [id]);
         return result.rows[0];
     }
 
     async getSimilarBooks(bookId, limit = 5) {
-        const bookResult = await this.db.query(`
-            SELECT * FROM books WHERE id = $1
-        `, [bookId]);
-        
+        const bookResult = await this.db.query(
+            'SELECT * FROM books WHERE id = ?',
+            [bookId]
+        );
+
         if (!bookResult.rows[0]) return [];
 
         const book = bookResult.rows[0];
         const categoryId = book.category_id;
-        
+
         const result = await this.db.query(`
-            SELECT * FROM books 
-            WHERE category_id = $1 AND id != $2
+            SELECT * FROM books
+            WHERE category_id = ? AND id != ?
             ORDER BY rating DESC
-            LIMIT $3
+            LIMIT ?
         `, [categoryId, bookId, limit]);
         return result.rows;
     }
 
     async decrementStock(id) {
-        await this.db.query(`
-            UPDATE books SET stock = stock - 1 WHERE id = $1 AND stock > 0
-        `, [id]);
+        await this.db.query(
+            'UPDATE books SET stock = stock - 1 WHERE id = ? AND stock > 0',
+            [id]
+        );
         return this.findById(id);
     }
 
     async incrementStock(id) {
-        await this.db.query(`
-            UPDATE books SET stock = stock + 1 WHERE id = $1
-        `, [id]);
+        await this.db.query(
+            'UPDATE books SET stock = stock + 1 WHERE id = ?',
+            [id]
+        );
         return this.findById(id);
     }
 
     async getStats() {
         const result = await this.db.query(`
-            SELECT 
+            SELECT
                 COUNT(*) as total_books,
                 COALESCE(AVG(rating), 0) as average_rating,
                 SUM(stock) as total_stock

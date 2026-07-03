@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import api, { userAPI } from '../../services/api';
-import TopNavBar from '../../components/TopNavBar';
 import Icon from '../../components/Icon';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -28,13 +27,13 @@ const AdminReports = () => {
 
     const exportToCSV = (type) => {
         let csv = 'data:text/csv;charset=utf-8,';
-        let filename = 'report.csv';
+        let filename = 'laporan.csv';
         if (type === 'summary') {
-            csv += `Metric,Value\nTotal Books,${stats.totalBooks}\nActive Loans,${stats.activeLoans}\nReturned Loans,${stats.returnedLoans}\nOverdue Loans,${stats.overdueLoans}\nTotal Members,${stats.totalUsers}\n`;
-            filename = 'library_summary_report.csv';
+            csv += `Metrik,Nilai\nTotal Buku,${stats.totalBooks}\nPeminjaman Aktif,${stats.activeLoans}\nBuku Dikembalikan,${stats.returnedLoans}\nPeminjaman Terlambat,${stats.overdueLoans}\nTotal Anggota,${stats.totalUsers}\n`;
+            filename = 'laporan_ringkasan_perpustakaan.csv';
         } else {
-            csv += 'Month,Borrowings,Returns,Overdues\nJanuary,45,40,2\nFebruary,60,52,4\nMarch,80,70,5\nApril,95,85,3\nMay,120,110,6\nJune,156,132,12\n';
-            filename = 'library_loan_trends.csv';
+            csv += 'Bulan,Peminjaman,Pengembalian,Terlambat\nJanuari,45,40,2\nFebruari,60,52,4\nMaret,80,70,5\nApril,95,85,3\nMei,120,110,6\nJuni,156,132,12\n';
+            filename = 'tren_peminjaman_perpustakaan.csv';
         }
         const a = document.createElement('a');
         a.href = encodeURI(csv); a.download = filename;
@@ -56,29 +55,27 @@ const AdminReports = () => {
 
     return (
         <div className="min-h-screen flex flex-col bg-background print:bg-white print:text-black">
-            <div className="print:hidden"><TopNavBar user={user} /></div>
-
-            <main className="flex-1 p-lg space-y-lg max-w-7xl mx-auto w-full">
+            <main className="flex-1 p-space-lg space-y-space-lg max-w-7xl mx-auto w-full">
                 {/* Header */}
                 <div className="flex justify-between items-center print:hidden">
                     <div>
-                        <h2 className="text-headline-lg text-on-surface">Reports & Analytics</h2>
-                        <p className="text-body-sm text-on-surface-variant">Analyze library performance, loan rates, and download reports</p>
+                        <h2 className="text-headline-lg text-on-surface">Laporan & Analitik</h2>
+                        <p className="text-body-sm text-on-surface-variant">Analisis kinerja perpustakaan, tingkat peminjaman, dan unduh laporan</p>
                     </div>
-                    <div className="flex gap-sm">
-                        <button onClick={() => window.print()} className="bg-surface-container border border-outline-variant/30 text-on-surface hover:bg-surface-container-high px-lg py-2.5 rounded-lg flex items-center gap-xs active:scale-95 transition-all text-body-sm">
-                            <Icon name="print" size={18} /> Print PDF
+                    <div className="flex gap-space-sm">
+                        <button onClick={() => window.print()} className="bg-surface-container border border-outline-variant/30 text-on-surface hover:bg-surface-container-high px-space-lg py-2.5 rounded-lg flex items-center gap-space-xs active:scale-95 transition-all text-body-sm">
+                            <Icon name="print" size={18} /> Cetak PDF
                         </button>
-                        <button onClick={() => exportToCSV('summary')} className="bg-primary-container text-on-primary font-bold px-lg py-2.5 rounded-lg flex items-center gap-xs hover:brightness-110 active:scale-95 transition-all text-body-sm">
-                            <Icon name="download" size={18} /> Export CSV
+                        <button onClick={() => exportToCSV('summary')} className="bg-primary text-on-primary font-bold px-space-lg py-2.5 rounded-lg flex items-center gap-space-xs hover:brightness-110 active:scale-95 transition-all text-body-sm">
+                            <Icon name="download" size={18} /> Ekspor CSV
                         </button>
                     </div>
                 </div>
 
                 {/* Print header */}
-                <div className="hidden print:block text-center space-y-xs pb-lg border-b border-gray-300">
-                    <h1 className="text-3xl font-bold">Library System Report</h1>
-                    <p className="text-sm text-gray-600">Generated on {new Date().toLocaleDateString()} | {user?.full_name}</p>
+                <div className="hidden print:block text-center space-y-space-xs pb-space-lg border-b border-gray-300">
+                    <h1 className="text-3xl font-bold">Laporan Sistem Perpustakaan</h1>
+                    <p className="text-sm text-gray-600">Dibuat pada {new Date().toLocaleDateString()} | {user?.full_name}</p>
                 </div>
 
                 {loading ? (
@@ -90,12 +87,12 @@ const AdminReports = () => {
                         {/* Summary metrics */}
                         <section className="grid grid-cols-1 md:grid-cols-4 gap-gutter">
                             {[
-                                { label: 'Return Rate',     value: `${returnRate}%`,      color: 'text-primary',           note: 'Of total loan transactions' },
-                                { label: 'Overdue Rate',    value: `${overdueRate}%`,     color: 'text-error',             note: 'Unreturned past due date' },
-                                { label: 'Total Loans',     value: totalLoansEver,        color: 'text-secondary',         note: 'Historical records' },
-                                { label: 'Active Members',  value: stats.totalUsers,      color: 'text-primary-container', note: 'Registered in database' },
+                                { label: 'Tingkat Pengembalian',     value: `${returnRate}%`,      color: 'text-primary',           note: 'Dari total transaksi peminjaman' },
+                                { label: 'Tingkat Keterlambatan',    value: `${overdueRate}%`,     color: 'text-error',             note: 'Belum dikembalikan lewat batas waktu' },
+                                { label: 'Total Peminjaman',     value: totalLoansEver,        color: 'text-secondary',         note: 'Catatan historis' },
+                                { label: 'Anggota Aktif',  value: stats.totalUsers,      color: 'text-primary-container', note: 'Terdaftar dalam database' },
                             ].map(({ label, value, color, note }) => (
-                                <div key={label} className="bg-surface-container-low p-md rounded-xl border border-outline-variant/10 print:border-gray-300 print:bg-white text-center space-y-xs">
+                                <div key={label} className="bg-surface p-space-md rounded-xl border border-outline-variant/30 print:border-gray-300 print:bg-white text-center space-y-space-xs shadow-sm">
                                     <p className="text-label-md text-on-surface-variant uppercase tracking-wider print:text-gray-600">{label}</p>
                                     <p className={`text-headline-xl font-bold ${color}`}>{value}</p>
                                     <p className="text-[11px] text-on-surface-variant print:text-gray-500">{note}</p>
@@ -103,21 +100,21 @@ const AdminReports = () => {
                             ))}
                         </section>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
                             {/* Bar chart */}
-                            <div className="lg:col-span-8 bg-surface-container-low border border-outline-variant/10 rounded-2xl p-md space-y-md">
+                            <div className="lg:col-span-8 bg-surface border border-outline-variant/30 rounded-2xl p-space-md space-y-space-md shadow-sm">
                                 <div className="flex justify-between items-center print:hidden">
-                                    <h3 className="text-headline-md text-on-surface flex items-center gap-xs">
+                                    <h3 className="text-headline-md text-on-surface flex items-center gap-space-xs font-bold">
                                         <Icon name="analytics" size={20} className="text-primary" />
-                                        Monthly Loan Trends (2026)
+                                        Tren Peminjaman Bulanan (2026)
                                     </h3>
-                                    <button onClick={() => exportToCSV('trends')} className="text-primary-container hover:underline text-label-md flex items-center gap-xs">
-                                        Export Chart Data
+                                    <button onClick={() => exportToCSV('trends')} className="text-primary-container hover:underline text-label-md flex items-center gap-space-xs font-bold">
+                                        Ekspor Data Grafik
                                     </button>
                                 </div>
-                                <h3 className="hidden print:block text-lg font-bold">Monthly Loan Trends</h3>
+                                <h3 className="hidden print:block text-lg font-bold">Tren Peminjaman Bulanan</h3>
 
-                                <div className="flex h-64 items-end gap-md pt-lg border-b border-outline-variant/20 pb-2">
+                                <div className="flex h-64 items-end gap-space-md pt-space-lg border-b border-outline-variant/20 pb-2">
                                     {monthlyData.map(({ label, value, pct }, i) => (
                                         <div key={label} className="flex-1 flex flex-col items-center h-full justify-end group">
                                             <span className="text-[10px] text-on-surface-variant group-hover:text-primary mb-1">{value}</span>
@@ -132,14 +129,14 @@ const AdminReports = () => {
                             </div>
 
                             {/* Analytics breakdown */}
-                            <div className="lg:col-span-4 bg-surface-container-low border border-outline-variant/10 rounded-2xl p-md space-y-md">
-                                <h3 className="text-headline-md text-on-surface">Analytics Breakdown</h3>
-                                <div className="space-y-sm">
+                            <div className="lg:col-span-4 bg-surface border border-outline-variant/30 rounded-2xl p-space-md space-y-space-md shadow-sm">
+                                <h3 className="text-headline-md text-on-surface font-bold">Rincian Analitik</h3>
+                                <div className="space-y-space-sm">
                                     {[
-                                        { label: 'Borrowings Returned', detail: `${stats.returnedLoans} of ${totalLoansEver}`, pct: returnRate, color: 'bg-primary' },
-                                        { label: 'Overdue Returns',     detail: `${stats.overdueLoans} cases`,                  pct: overdueRate, color: 'bg-error' },
+                                        { label: 'Peminjaman Dikembalikan', detail: `${stats.returnedLoans} dari ${totalLoansEver}`, pct: returnRate, color: 'bg-primary' },
+                                        { label: 'Pengembalian Terlambat',     detail: `${stats.overdueLoans} kasus`,                  pct: overdueRate, color: 'bg-error' },
                                     ].map(({ label, detail, pct, color }) => (
-                                        <div key={label} className="space-y-xs">
+                                        <div key={label} className="space-y-space-xs">
                                             <div className="flex justify-between text-body-sm">
                                                 <span className="text-on-surface-variant">{label}</span>
                                                 <span className="text-on-surface font-semibold">{detail}</span>
@@ -149,14 +146,14 @@ const AdminReports = () => {
                                             </div>
                                         </div>
                                     ))}
-                                    <div className="space-y-xs pt-xs border-t border-outline-variant/10">
+                                    <div className="space-y-space-xs pt-space-xs border-t border-outline-variant/10">
                                         <div className="flex justify-between text-[11px] text-on-surface-variant">
-                                            <span>Fine Collected (est.):</span>
+                                            <span>Denda Terkumpul (est.):</span>
                                             <span className="font-semibold text-primary">${(stats.overdueLoans * 0.5 * 14).toFixed(2)}</span>
                                         </div>
                                         <div className="flex justify-between text-[11px] text-on-surface-variant">
-                                            <span>Default Period:</span>
-                                            <span className="font-semibold text-on-surface">14 Days</span>
+                                            <span>Periode Default:</span>
+                                            <span className="font-semibold text-on-surface">14 Hari</span>
                                         </div>
                                     </div>
                                 </div>

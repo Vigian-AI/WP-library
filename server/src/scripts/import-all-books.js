@@ -12,18 +12,21 @@ async function importCategory(categoryName, bookCoversDir) {
     const csvPath = path.join(categoryDir, csvFiles[0]);
 
     let categoryResult = await db.query(
-        'SELECT id FROM categories WHERE name = $1',
+        'SELECT id FROM categories WHERE name = ?',
         [categoryName]
     );
 
+    let categoryId;
     if (categoryResult.rows.length === 0) {
-        categoryResult = await db.query(
-            'INSERT INTO categories (name) VALUES ($1) RETURNING id',
+        const insertResult = await db.query(
+            'INSERT INTO categories (name) VALUES (?)',
             [categoryName]
         );
+        categoryId = insertResult.rows[0].insertId;
+    } else {
+        categoryId = categoryResult.rows[0].id;
     }
 
-    const categoryId = categoryResult.rows[0].id;
     const books = [];
 
     return new Promise((resolve) => {
@@ -54,8 +57,8 @@ async function importCategory(categoryName, bookCoversDir) {
                     const oldPrice = parseFloat(book.old_price || 0) || null;
 
                     await db.query(
-                        `INSERT INTO books (isbn, title, author, format, price, currency, old_price, cover_image_url, rating, stock, category_id)
-                         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+                        `INSERT IGNORE INTO books (isbn, title, author, format, price, currency, old_price, cover_image_url, rating, stock, category_id)
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                         [
                             book.isbn,
                             book.name || book.title,

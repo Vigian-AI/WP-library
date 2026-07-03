@@ -20,7 +20,9 @@ const TopNavBar = ({ user, onSearch }) => {
     };
 
     return (
-        <header className="h-[64px] sticky top-0 z-40 w-full bg-surface/95 backdrop-blur-md flex items-center px-lg gap-lg border-b border-outline-variant/10">
+        <header 
+            className={`h-[64px] sticky top-0 z-50 w-full bg-surface/95 backdrop-blur-md flex items-center pr-lg gap-md border-b border-outline-variant/10 ${user ? 'pl-[80px]' : 'pl-lg'}`}
+        >
             {/* Logo */}
             <div
                 className="flex items-center gap-xs cursor-pointer flex-shrink-0"
@@ -28,30 +30,10 @@ const TopNavBar = ({ user, onSearch }) => {
             >
                 <Icon name="menu_book" size={24} className="text-primary" />
                 <h1 className="text-headline-md font-bold text-on-surface hidden sm:block">
-                    Library
+                    Perpustakaan
                 </h1>
             </div>
 
-            {/* Navigation Tabs */}
-            <nav className="hidden lg:flex items-center gap-xs h-full">
-                {[
-                    { label: 'Library', path: '/' },
-                    { label: 'Books', path: '/catalog' },
-                ].map((tab) => (
-                    <Link
-                        key={tab.label}
-                        to={tab.path}
-                        className={`px-4 py-2 text-sm font-semibold transition-all ${
-                            location.pathname === tab.path
-                                ? 'bg-primary text-on-primary'
-                                : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
-                        }`}
-                    >
-                        {tab.label}
-                    </Link>
-                ))}
-
-            </nav>
 
             {/* Search bar */}
             <form
@@ -68,7 +50,7 @@ const TopNavBar = ({ user, onSearch }) => {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full bg-surface-container h-[42px] pl-10 pr-4 text-body-sm text-on-surface border border-outline-variant/30 focus:border-primary/60 focus:outline-none focus:ring-1 focus:ring-primary/60 transition-colors placeholder:text-outline"
-                    placeholder="Search by book name, author, categories..."
+                    placeholder="Cari berdasarkan judul, penulis, atau kategori..."
                 />
             </form>
 
@@ -76,7 +58,7 @@ const TopNavBar = ({ user, onSearch }) => {
             <div className="flex items-center gap-sm ml-auto">
                 <button
                     className="relative w-10 h-10 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors"
-                    title="Notifications"
+                    title="Notifikasi"
                 >
                     <Icon name="notifications" size={22} />
                 </button>
@@ -88,37 +70,64 @@ const TopNavBar = ({ user, onSearch }) => {
                     >
                         <div className="w-8 h-8 overflow-hidden bg-surface-container-high">
                             <img
-                                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user?.full_name || 'G')}&background=bfdbfe&color=020617&bold=true&size=36`}
-                                alt={user?.full_name || 'Guest'}
+                                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user?.full_name || 'T')}&background=bfdbfe&color=020617&bold=true&size=36`}
+                                alt={user?.full_name || 'Tamu'}
                                 className="w-full h-full object-cover"
                             />
                         </div>
                         <span className="hidden sm:block text-body-sm font-semibold text-on-surface">
-                            {user?.full_name || 'Guest'}
+                            {user?.full_name || 'Tamu'}
                         </span>
                         <Icon name="expand_more" size={18} className="text-on-surface-variant" />
                     </button>
 
                     {showDropdown && (
-                        <div className="absolute right-0 top-12 w-52 bg-surface-container-high p-xs shadow-xl z-50 border border-outline-variant/10">
-                            <div className="px-sm py-xs mb-xs">
-                                <p className="text-body-sm font-bold text-on-surface truncate">{user?.full_name}</p>
-                                <p className="text-label-md text-on-surface-variant truncate">{user?.email}</p>
+                        <div className="absolute right-0 top-14 w-72 bg-surface rounded-2xl shadow-2xl z-50 border border-outline-variant/20 overflow-hidden">
+                            {/* Profile Header */}
+                            <div className="bg-gradient-to-br from-primary/10 via-surface-container-low to-surface-container px-space-md py-space-md flex flex-col items-center text-center">
+                                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/30 shadow-md mb-2">
+                                    <img
+                                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user?.full_name || 'T')}&background=8b6f47&color=ffffff&bold=true&size=64`}
+                                        alt={user?.full_name || 'Tamu'}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                                <p className="text-body-sm font-bold text-on-surface truncate w-full">{user?.full_name}</p>
+                                <p className="text-label-md text-on-surface-variant truncate w-full">{user?.email}</p>
+                                {user?.role && (
+                                    <span className={`mt-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wide uppercase ${user.role === 'admin' ? 'bg-primary/15 text-primary' : 'bg-secondary/15 text-secondary'}`}>
+                                        {user.role}
+                                    </span>
+                                )}
                             </div>
-                            <button
-                                onClick={() => { navigate('/settings'); setShowDropdown(false); }}
-                                className="w-full text-left px-sm py-2 hover:bg-surface-container-highest text-body-sm flex items-center gap-xs text-on-surface transition-colors"
-                            >
-                                <Icon name="settings" size={18} className="text-on-surface-variant" />
-                                Settings
-                            </button>
-                            <button
-                                onClick={() => { logout(); setShowDropdown(false); navigate('/login'); }}
-                                className="w-full text-left px-sm py-2 hover:bg-error-container/20 hover:text-error text-body-sm flex items-center gap-xs text-on-surface transition-colors"
-                            >
-                                <Icon name="logout" size={18} className="text-on-surface-variant" />
-                                Logout
-                            </button>
+
+                            {/* Menu Items */}
+                            <div className="p-2">
+                                <button
+                                    onClick={() => { navigate('/settings'); setShowDropdown(false); }}
+                                    className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-surface-container text-body-sm flex items-center gap-space-xs text-on-surface transition-colors"
+                                >
+                                    <div className="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center">
+                                        <Icon name="settings" size={18} className="text-on-surface-variant" />
+                                    </div>
+                                    <div>
+                                        <span className="font-semibold">Pengaturan</span>
+                                        <p className="text-[11px] text-on-surface-variant leading-tight">Preferensi akun</p>
+                                    </div>
+                                </button>
+                                <button
+                                    onClick={() => { logout(); setShowDropdown(false); navigate('/login'); }}
+                                    className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-error-container/20 text-body-sm flex items-center gap-space-xs text-on-surface transition-colors group"
+                                >
+                                    <div className="w-8 h-8 rounded-lg bg-surface-container group-hover:bg-error/10 flex items-center justify-center transition-colors">
+                                        <Icon name="logout" size={18} className="text-on-surface-variant group-hover:text-error transition-colors" />
+                                    </div>
+                                    <div>
+                                        <span className="font-semibold group-hover:text-error transition-colors">Keluar</span>
+                                        <p className="text-[11px] text-on-surface-variant leading-tight">Keluar dari akun Anda</p>
+                                    </div>
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>

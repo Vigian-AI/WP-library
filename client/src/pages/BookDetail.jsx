@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { bookAPI, wishlistAPI } from '../services/api';
 import BookCard from '../components/BookCard';
-import TopNavBar from '../components/TopNavBar';
 import Icon from '../components/Icon';
 import { useAuth } from '../hooks/useAuth';
 import Button from '../components/Button';
@@ -36,19 +35,19 @@ const BookDetail = () => {
     const handleBorrow = async () => {
         try {
             await bookAPI.borrow(id);
-            alert('Book borrowed successfully!');
+            alert('Buku berhasil dipinjam!');
             navigate('/loans');
         } catch (error) {
-            alert(error.response?.data?.error || 'Failed to borrow book');
+            alert(error.response?.data?.error || 'Gagal meminjam buku');
         }
     };
 
     const handleWishlist = async () => {
         try {
             await wishlistAPI.add(id);
-            alert('Added to wishlist!');
+            alert('Berhasil ditambahkan ke favorit!');
         } catch (error) {
-            alert(error.response?.data?.error || 'Failed to add to wishlist');
+            alert(error.response?.data?.error || 'Gagal menambahkan ke favorit');
         }
     };
 
@@ -63,15 +62,15 @@ const BookDetail = () => {
     if (!book) {
         return (
             <div className="min-h-screen flex flex-col bg-background">
-                <TopNavBar user={user} onSearch={() => {}} />
+
                 <main className="flex-1 p-lg text-center">
-                    <h2 className="text-headline-lg">Book not found</h2>
+                    <h2 className="text-headline-lg">Buku tidak ditemukan</h2>
                     <Button 
                         variant="outline" 
                         onClick={() => navigate('/catalog')}
                         className="mt-md"
                     >
-                        Back to Catalog
+                        Kembali ke Katalog
                     </Button>
                 </main>
             </div>
@@ -80,7 +79,6 @@ const BookDetail = () => {
 
     return (
         <div className="min-h-screen flex flex-col bg-background">
-            <TopNavBar user={user} onSearch={() => {}} />
             <main className="flex-1 px-lg py-md lg:px-xl lg:py-lg">
                 <div className="max-w-4xl mx-auto">
                     <Button
@@ -90,7 +88,7 @@ const BookDetail = () => {
                         onClick={() => navigate(-1)}
                         className="mb-lg px-0"
                     >
-                        Back
+                        Kembali
                     </Button>
 
                     <div className="flex flex-col md:flex-row gap-lg">
@@ -121,17 +119,17 @@ const BookDetail = () => {
                                     </span>
                                 </div>
                                 <span className="text-body-sm text-on-surface-variant">|</span>
-                                <span className="text-body-sm text-on-surface-variant">{book.borrow_count || 0} reads</span>
+                                <span className="text-body-sm text-on-surface-variant">{book.borrow_count || 0} kali dibaca</span>
                             </div>
 
                             {/* Metadata grid */}
                             <div className="grid grid-cols-2 gap-md">
                                 {[
-                                    { label: 'Category', value: book.category_name || 'N/A' },
+                                    { label: 'Kategori', value: book.category_name || 'N/A' },
                                     { label: 'Format',   value: book.format || 'Paperback' },
                                     { label: 'ISBN',     value: book.isbn },
-                                    { label: 'Stock',    value: book.stock > 0 ? `${book.stock} available` : 'Out of stock' },
-                                    { label: 'Pages',    value: `${((book.isbn ? parseInt(book.isbn.substring(3, 7)) % 300 : 0) + 120) || 280} pages` },
+                                    { label: 'Stok',    value: book.stock > 0 ? `${book.stock} tersedia` : 'Stok habis' },
+                                    { label: 'Halaman',    value: `${((book.isbn ? parseInt(book.isbn.substring(3, 7)) % 300 : 0) + 120) || 280} halaman` },
                                 ].map(({ label, value }) => (
                                     <div key={label}>
                                         <p className="text-label-md text-on-surface-variant uppercase tracking-wide">{label}</p>
@@ -142,10 +140,10 @@ const BookDetail = () => {
 
                             {/* Synopsis */}
                             <div className="pt-sm border-t border-outline-variant/20">
-                                <p className="text-label-md text-on-surface-variant uppercase tracking-wide mb-2">Synopsis</p>
+                                <p className="text-label-md text-on-surface-variant uppercase tracking-wide mb-2">Sinopsis</p>
                                 <p className="text-body-sm text-on-surface-variant leading-relaxed">
                                     {book.description ||
-                                        `Delve into the compelling narrative of "${book.title}" by ${book.author}. This work explores the concepts of ${book.category_name || 'general interest'} in a style that is both immersive and thought-provoking. Highly recommended for students, researchers, and general readers.`}
+                                        `Telusuri kisah menarik "${book.title}" karya ${book.author}. Buku ini mengeksplorasi tema-tema ${book.category_name || 'minat umum'} dengan gaya yang imersif dan menggugah pikiran. Sangat direkomendasikan untuk pelajar, peneliti, dan pembaca umum.`}
                                 </p>
                             </div>
 
@@ -157,11 +155,11 @@ const BookDetail = () => {
                                         onClick={handleBorrow}
                                         className="flex-1 sm:flex-none"
                                     >
-                                        Borrow Now
+                                        Pinjam Sekarang
                                     </Button>
                                 ) : (
                                     <Button disabled variant="secondary" className="flex-1 sm:flex-none">
-                                        Unavailable
+                                        Tidak Tersedia
                                     </Button>
                                 )}
                                 <Button
@@ -170,7 +168,7 @@ const BookDetail = () => {
                                     onClick={handleWishlist}
                                     className="flex-1 sm:flex-none"
                                 >
-                                    Wishlist
+                                    Favorit
                                 </Button>
                             </div>
                         </div>
@@ -179,7 +177,7 @@ const BookDetail = () => {
                     {/* Similar books */}
                     {similarBooks.length > 0 && (
                         <div className="mt-xl">
-                            <h3 className="text-headline-lg text-on-surface font-bold mb-md">Similar Books</h3>
+                            <h3 className="text-headline-lg text-on-surface font-bold mb-md">Buku Serupa</h3>
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-gutter">
                                 {similarBooks.map((similarBook) => (
                                     <BookCard key={similarBook.id} book={similarBook} />

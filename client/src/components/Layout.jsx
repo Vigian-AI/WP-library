@@ -1,7 +1,8 @@
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import SideNavBar from '../components/SideNavBar';
-import Icon from '../components/Icon';
+import SideNavBar from './SideNavBar';
+import TopNavBar from './TopNavBar';
+import Icon from './Icon';
 
 const Layout = () => {
     const { user, loading } = useAuth();
@@ -23,11 +24,17 @@ const Layout = () => {
     }
 
     return (
-        <div className="flex min-h-screen bg-background text-on-surface">
-            {user && <SideNavBar />}
-            <main className={`flex-1 ${user ? 'ml-[80px] print:ml-0' : ''} min-h-screen`}>
-                <Outlet />
-            </main>
+        <div className="min-h-screen bg-background text-on-surface">
+            {/* TopNavBar — full width di paling atas */}
+            {user && <TopNavBar user={user} />}
+
+            {/* Sidebar + Content di bawah navbar */}
+            <div className="flex">
+                {user && <SideNavBar />}
+                <main className={`flex-1 ${user ? 'ml-[72px] print:ml-0' : ''}`}>
+                    <Outlet />
+                </main>
+            </div>
         </div>
     );
 };

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { loanAPI } from '../services/api';
-import TopNavBar from '../components/TopNavBar';
 import Icon from '../components/Icon';
 import { useAuth } from '../hooks/useAuth';
 
@@ -33,20 +32,20 @@ const Loans = () => {
     const handleReturn = async (loanId) => {
         try {
             await loanAPI.return(loanId);
-            alert('Book returned successfully!');
+            alert('Buku berhasil dikembalikan!');
             fetchLoans();
         } catch (error) {
-            alert(error.response?.data?.error || 'Failed to return book');
+            alert(error.response?.data?.error || 'Gagal mengembalikan buku');
         }
     };
 
     const handleExtend = async (loanId) => {
         try {
             await loanAPI.extend(loanId, 7);
-            alert('Loan extended by 7 days!');
+            alert('Peminjaman diperpanjang 7 hari!');
             fetchLoans();
         } catch (error) {
-            alert(error.response?.data?.error || 'Failed to extend loan');
+            alert(error.response?.data?.error || 'Gagal memperpanjang peminjaman');
         }
     };
 
@@ -59,19 +58,17 @@ const Loans = () => {
 
     return (
         <div className="min-h-screen flex flex-col bg-background">
-            <TopNavBar user={user} onSearch={() => {}} />
-
             <main className="flex-1 p-lg">
                 <div className="max-w-4xl mx-auto space-y-lg">
                     <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-md">
                         <div>
                             <h2 className="text-headline-lg text-on-surface">
-                                {activeTab === 'active' ? 'My Borrowed Books' : 'My Reading History'}
+                                {activeTab === 'active' ? 'Buku yang Saya Pinjam' : 'Riwayat Membaca Saya'}
                             </h2>
                             <p className="text-body-sm text-on-surface-variant">
                                 {activeTab === 'active'
-                                    ? 'Manage your active loans and track due dates'
-                                    : 'Review all the books you have previously read'}
+                                    ? 'Kelola peminjaman aktif Anda dan pantau tanggal jatuh tempo'
+                                    : 'Tinjau semua buku yang telah Anda baca sebelumnya'}
                             </p>
                         </div>
 
@@ -87,7 +84,7 @@ const Loans = () => {
                                                         : 'hover:bg-surface-container-highest text-on-surface-variant'
                                                 }`}
                                             >
-                                                {tab === 'active' ? 'Active Loans' : 'History'}
+                                                {tab === 'active' ? 'Peminjaman Aktif' : 'Riwayat Peminjaman'}
                                             </button>
                                         ))}
                                     </div>
@@ -106,8 +103,8 @@ const Loans = () => {
                             />
                             <p className="text-body-md text-on-surface-variant mt-4">
                                 {activeTab === 'active'
-                                    ? 'No active loans found. Browse the catalog to borrow books.'
-                                    : 'You have no reading history records yet.'}
+                                    ? 'Tidak ada peminjaman aktif. Jelajahi katalog untuk meminjam buku.'
+                                    : 'Anda belum memiliki riwayat membaca.'}
                             </p>
                         </div>
                     ) : (
@@ -132,18 +129,18 @@ const Loans = () => {
                                                 <p className="text-body-sm text-on-surface-variant truncate">{loan.author}</p>
                                                 <div className="grid grid-cols-2 gap-x-md gap-y-xs pt-xs text-label-md">
                                                     <p>
-                                                        <span className="text-on-surface-variant">Borrowed: </span>
+                                                        <span className="text-on-surface-variant">Dipinjam: </span>
                                                         <span className="text-on-surface font-semibold">{new Date(loan.loan_date).toLocaleDateString()}</span>
                                                     </p>
                                                     <p>
-                                                        <span className="text-on-surface-variant">Due Date: </span>
+                                                        <span className="text-on-surface-variant">Jatuh Tempo: </span>
                                                         <span className={`font-semibold ${overdue && loan.status !== 'returned' ? 'text-error' : 'text-on-surface'}`}>
                                                             {new Date(loan.due_date).toLocaleDateString()}
                                                         </span>
                                                     </p>
                                                     {loan.return_date && (
                                                         <p className="col-span-2">
-                                                            <span className="text-on-surface-variant">Returned: </span>
+                                                            <span className="text-on-surface-variant">Dikembalikan: </span>
                                                             <span className="text-primary font-semibold">{new Date(loan.return_date).toLocaleDateString()}</span>
                                                         </p>
                                                     )}
@@ -158,7 +155,7 @@ const Loans = () => {
                                                     : overdue ? 'bg-error/20 text-error'
                                                     : 'bg-secondary-container/50 text-secondary'
                                                 }`}>
-                                                    {loan.status === 'returned' ? 'Returned' : overdue ? 'Overdue' : 'Active'}
+                                                    {loan.status === 'returned' ? 'Dikembalikan' : overdue ? 'Terlambat' : 'Aktif'}
                                                 </span>
                                             </div>
                                             {(loan.status === 'active' || loan.status === 'overdue') && (
@@ -167,13 +164,13 @@ const Loans = () => {
                                                       onClick={() => handleExtend(loan.id)}
                                                       className="px-lg py-2 rounded-lg border border-primary/30 text-primary hover:bg-primary/10 transition-all text-label-md font-bold active:scale-95"
                                                   >
-                                                      Extend
+                                                      Perpanjang
                                                   </button>
                                                     <button
                                                         onClick={() => handleReturn(loan.id)}
                                                         className="px-lg py-2 rounded-lg bg-error text-on-error hover:brightness-110 transition-all text-label-md font-bold active:scale-95"
                                                     >
-                                                        Return
+                                                        Kembalikan
                                                     </button>
                                                 </div>
                                             )}

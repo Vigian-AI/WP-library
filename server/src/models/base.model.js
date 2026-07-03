@@ -11,7 +11,7 @@ class BaseModel {
 
     async findById(id, columns = '*') {
         const result = await this.db.query(
-            `SELECT ${columns} FROM ${this.tableName} WHERE id = $1`,
+            `SELECT ${columns} FROM ${this.tableName} WHERE id = ?`,
             [id]
         );
         return result.rows[0];
@@ -20,7 +20,7 @@ class BaseModel {
     async findBy(columns) {
         const keys = Object.keys(columns);
         const values = Object.values(columns);
-        const conditions = keys.map((key, index) => `${key} = $${index + 1}`).join(' AND ');
+        const conditions = keys.map((key) => `${key} = ?`).join(' AND ');
         const result = await this.db.query(
             `SELECT * FROM ${this.tableName} WHERE ${conditions}`,
             values
@@ -31,7 +31,7 @@ class BaseModel {
     async findOneBy(columns) {
         const keys = Object.keys(columns);
         const values = Object.values(columns);
-        const conditions = keys.map((key, index) => `${key} = $${index + 1}`).join(' AND ');
+        const conditions = keys.map((key) => `${key} = ?`).join(' AND ');
         const result = await this.db.query(
             `SELECT * FROM ${this.tableName} WHERE ${conditions} LIMIT 1`,
             values
@@ -43,37 +43,40 @@ class BaseModel {
         const keys = Object.keys(data);
         const values = Object.values(data);
         const columns = keys.join(', ');
-        const placeholders = keys.map((_, index) => `$${index + 1}`).join(', ');
-        
+        const placeholders = keys.map(() => '?').join(', ');
+
         const result = await this.db.query(
-            `INSERT INTO ${this.tableName} (${columns}) VALUES (${placeholders}) RETURNING *`,
+            `INSERT INTO ${this.tableName} (${columns}) VALUES (${placeholders})`,
             values
         );
-        return result.rows[0];
+        // result.rows[0] is the OkPacket with insertId
+        const insertId = result.rows[0].insertId;
+        return this.findById(insertId);
     }
 
     async update(id, data) {
         const keys = Object.keys(data);
         const values = Object.values(data);
-        const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(', ');
-        
-        const result = await this.db.query(
-            `UPDATE ${this.tableName} SET ${setClause} WHERE id = $${values.length + 1} RETURNING *`,
+        const setClause = keys.map((key) => `${key} = ?`).join(', ');
+
+        await this.db.query(
+            `UPDATE ${this.tableName} SET ${setClause} WHERE id = ?`,
             [...values, id]
         );
-        return result.rows[0];
+        return this.findById(id);
     }
 
     async delete(id) {
-        const result = await this.db.query(
-            `DELETE FROM ${this.tableName} WHERE id = $1 RETURNING *`,
+        const row = await this.findById(id);
+        await this.db.query(
+            `DELETE FROM ${this.tableName} WHERE id = ?`,
             [id]
         );
-        return result.rows[0];
+        return row;
     }
 
     async count() {
-        const result = await this.db.query(`SELECT COUNT(*) FROM ${this.tableName}`);
+        const result = await this.db.query(`SELECT COUNT(*) as count FROM ${this.tableName}`);
         return parseInt(result.rows[0].count);
     }
 }

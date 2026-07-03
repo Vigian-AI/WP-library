@@ -10,7 +10,7 @@ class LoanModel extends BaseModel {
             SELECT l.*, b.title, b.author, b.cover_image_url, b.rating, b.stock, b.format
             FROM loans l
             JOIN books b ON l.book_id = b.id
-            WHERE l.user_id = $1
+            WHERE l.user_id = ?
             ORDER BY l.loan_date DESC
         `, [userId]);
         return result.rows;
@@ -21,7 +21,7 @@ class LoanModel extends BaseModel {
             SELECT l.*, b.title, b.author, b.cover_image_url, b.rating, b.stock, b.format
             FROM loans l
             JOIN books b ON l.book_id = b.id
-            WHERE l.user_id = $1 AND l.status = 'active'
+            WHERE l.user_id = ? AND l.status = 'active'
             ORDER BY l.due_date ASC
         `, [userId]);
         return result.rows;
@@ -40,34 +40,34 @@ class LoanModel extends BaseModel {
     }
 
     async returnBook(loanId) {
-        await this.db.transaction(async (client) => {
-            await client.query(`
-                UPDATE loans 
+        await this.db.transaction(async (connection) => {
+            await connection.execute(`
+                UPDATE loans
                 SET return_date = NOW(), status = 'returned', updated_at = NOW()
-                WHERE id = $1
+                WHERE id = ?
             `, [loanId]);
 
-            const loanResult = await client.query(
-                'SELECT book_id FROM loans WHERE id = $1',
+            const [rows] = await connection.execute(
+                'SELECT book_id FROM loans WHERE id = ?',
                 [loanId]
             );
 
-            await client.query(`
-                UPDATE books SET stock = stock + 1 WHERE id = $1
-            `, [loanResult.rows[0].book_id]);
+            await connection.execute(
+                'UPDATE books SET stock = stock + 1 WHERE id = ?',
+                [rows[0].book_id]
+            );
         });
 
         return this.findById(loanId);
     }
 
     async extendLoan(loanId, days) {
-        const result = await this.db.query(`
-            UPDATE loans 
-            SET due_date = due_date + INTERVAL '${days} days', updated_at = NOW()
-            WHERE id = $1 AND status = 'active'
-            RETURNING *
-        `, [loanId]);
-        return result.rows[0];
+        await this.db.query(`
+            UPDATE loans
+            SET due_date = DATE_ADD(due_date, INTERVAL ? DAY), updated_at = NOW()
+            WHERE id = ? AND status = 'active'
+        `, [days, loanId]);
+        return this.findById(loanId);
     }
 
     async getActiveLoans() {
@@ -84,7 +84,7 @@ class LoanModel extends BaseModel {
 
     async getStats() {
         const result = await this.db.query(`
-            SELECT 
+            SELECT
                 COUNT(*) as total_loans,
                 COUNT(CASE WHEN status = 'active' THEN 1 END) as active_loans,
                 COUNT(CASE WHEN status = 'returned' THEN 1 END) as returned_loans,

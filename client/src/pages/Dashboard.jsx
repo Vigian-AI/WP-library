@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { bookAPI, loanAPI, categoryAPI } from '../services/api';
 import BookCard from '../components/BookCard';
-import TopNavBar from '../components/TopNavBar';
 import Icon from '../components/Icon';
 import { useAuth } from '../hooks/useAuth';
 import Button from '../components/Button';
@@ -43,19 +42,18 @@ const Dashboard = () => {
 
     return (
         <div className="min-h-screen flex flex-col bg-background">
-            <TopNavBar user={user} />
             <main className="flex-1 p-lg lg:px-xl lg:py-xl max-w-[var(--width-app)] mx-auto w-full space-y-xl">
 
                 {/* Hero Section */}
-                <section className="relative overflow-hidden h-[320px] flex items-center p-lg bg-gradient-to-br from-primary/10 via-surface-container-low to-surface-container shadow-sm">
+                <section className="relative overflow-hidden h-[300px] flex items-start pt-10 px-lg bg-gradient-to-br from-primary/10 via-surface-container-low to-surface-container shadow-sm">
                     <div className="max-w-2xl space-y-md relative z-10">
                         <h2 className="text-[48px] leading-tight font-bold text-primary">
-                            Welcome back, {user?.full_name?.split(' ')[0] || 'Guest'}!
+                            Selamat datang kembali, {user?.full_name?.split(' ')[0] || 'Tamu'}!
                         </h2>
                         <p className="text-[18px] text-on-surface-variant max-w-lg">
-                            Continue your journey through the realms of knowledge. You have{' '}
+                            Lanjutkan petualangan Anda di dunia pengetahuan. Saat ini Anda sedang meminjam{' '}
                             <span className="text-on-surface font-bold">{borrowedBooks.length}</span>{' '}
-                            book{borrowedBooks.length !== 1 ? 's' : ''} currently borrowed.
+                            buku.
                         </p>
                         <div className="flex flex-wrap gap-4 pt-sm">
                             <Button
@@ -64,20 +62,20 @@ const Dashboard = () => {
                                 icon="play_circle"
                                 className="px-8"
                             >
-                                Continue Reading
+                                Lanjutkan Membaca
                             </Button>
                             <Button
                                 onClick={() => navigate('/catalog')}
                                 variant="outline"
                                 className="px-8"
                             >
-                                Explore Catalog
+                                Jelajahi Katalog
                             </Button>
                         </div>
                     </div>
                     {/* Decorative Element/Illustration Placeholder */}
-                    <div className="absolute right-[-5%] bottom-[-10%] w-1/2 h-full opacity-20 pointer-events-none">
-                         <Icon name="auto_stories" size={320} className="text-primary" />
+                    <div className="absolute right-0 top-0 bottom-0 w-1/2 opacity-10 pointer-events-none flex items-center justify-center">
+                         <Icon name="auto_stories" size={260} className="text-primary" />
                     </div>
                 </section>
 
@@ -87,14 +85,14 @@ const Dashboard = () => {
                         {/* Previous Reading */}
                         <section className="space-y-md">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-headline-lg text-on-surface font-bold">Previous Reading</h3>
+                                <h3 className="text-headline-lg text-on-surface font-bold">Bacaan Sebelumnya</h3>
                                 <Button
                                     variant="ghost"
                                     size="sm"
                                     onClick={() => navigate('/loans')}
                                     className="px-0"
                                 >
-                                    Manage Loans <Icon name="arrow_forward" size={16} className="ml-1" />
+                                    Kelola Peminjaman <Icon name="arrow_forward" size={16} className="ml-1" />
                                 </Button>
                             </div>
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-gutter">
@@ -102,7 +100,7 @@ const Dashboard = () => {
                                     borrowedBooks.map((loan) => <BookCard key={loan.id} book={loan} />)
                                 ) : (
                                     <div className="col-span-full py-12 bg-surface-container/30 text-center">
-                                        <p className="text-on-surface-variant italic">No books currently borrowed. Start exploring!</p>
+                                        <p className="text-on-surface-variant italic">Belum ada buku yang dipinjam. Mulai menjelajah!</p>
                                     </div>
                                 )}
                             </div>
@@ -110,7 +108,7 @@ const Dashboard = () => {
 
                         {/* Subjects */}
                         <section className="space-y-md">
-                            <h3 className="text-headline-lg text-on-surface font-bold">Subjects</h3>
+                            <h3 className="text-headline-lg text-on-surface font-bold">Kategori</h3>
                             <div className="flex flex-wrap gap-sm">
                                 {categories.slice(0, 12).map((cat) => (
                                     <button
@@ -128,14 +126,14 @@ const Dashboard = () => {
                         {/* New Books */}
                         <section className="space-y-md">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-headline-lg text-on-surface font-bold">New Books</h3>
+                                <h3 className="text-headline-lg text-on-surface font-bold">Buku Baru</h3>
                                 <Button
                                     variant="ghost"
                                     size="sm"
                                     onClick={() => navigate('/catalog')}
                                     className="px-0"
                                 >
-                                    Show all
+                                    Lihat semua
                                 </Button>
                             </div>
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-gutter">
@@ -150,7 +148,7 @@ const Dashboard = () => {
 
 
             <footer className="mt-auto p-md text-center bg-surface-container-low/50 border-t border-outline-variant/10">
-                <p className="text-label-md text-on-surface-variant">© 2024 Digital Library. All rights reserved.</p>
+                <p className="text-label-md text-on-surface-variant">© 2024 Perpustakaan Digital. Hak Cipta Dilindungi.</p>
             </footer>
         </div>
     );

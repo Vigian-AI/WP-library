@@ -10,7 +10,7 @@ class WishlistModel extends BaseModel {
             SELECT w.*, b.title, b.author, b.cover_image_url, b.rating, b.stock
             FROM wishlists w
             JOIN books b ON w.book_id = b.id
-            WHERE w.user_id = $1
+            WHERE w.user_id = ?
             ORDER BY w.created_at DESC
         `, [userId]);
         return result.rows;
@@ -23,11 +23,12 @@ class WishlistModel extends BaseModel {
     }
 
     async remove(userId, bookId) {
-        const result = await this.db.query(
-            `DELETE FROM wishlists WHERE user_id = $1 AND book_id = $2 RETURNING *`,
+        const row = await this.findOneBy({ user_id: userId, book_id: bookId });
+        await this.db.query(
+            'DELETE FROM wishlists WHERE user_id = ? AND book_id = ?',
             [userId, bookId]
         );
-        return result.rows[0];
+        return row;
     }
 }
 

@@ -15,12 +15,12 @@ class UserModel extends BaseModel {
 
     async findAllWithStats() {
         const result = await this.db.query(`
-            SELECT u.*, 
-                   COUNT(l.id) as active_loans,
-                   COUNT(n.id) as unread_notifications
+            SELECT u.*,
+                   COUNT(DISTINCT CASE WHEN l.status = 'active' THEN l.id END) as active_loans,
+                   COUNT(DISTINCT CASE WHEN n.is_read = 0 THEN n.id END) as unread_notifications
             FROM users u
-            LEFT JOIN loans l ON u.id = l.user_id AND l.status = 'active'
-            LEFT JOIN notifications n ON u.id = n.user_id AND n.is_read = false
+            LEFT JOIN loans l ON u.id = l.user_id
+            LEFT JOIN notifications n ON u.id = n.user_id
             GROUP BY u.id
             ORDER BY u.id ASC
         `);
@@ -55,7 +55,7 @@ class UserModel extends BaseModel {
             SELECT l.*, b.title, b.author, b.cover_image_url
             FROM loans l
             JOIN books b ON l.book_id = b.id
-            WHERE l.user_id = $1
+            WHERE l.user_id = ?
             ORDER BY l.loan_date DESC
         `, [userId]);
         return result.rows;

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api, { bookAPI, userAPI, categoryAPI } from '../../services/api';
-import TopNavBar from '../../components/TopNavBar';
 import Icon from '../../components/Icon';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -50,12 +49,12 @@ const AdminDashboard = () => {
         setModalError(''); setModalSuccess('');
         try {
             await bookAPI.create({ ...bookForm, category_id: parseInt(bookForm.category_id), stock: parseInt(bookForm.stock), price: parseFloat(bookForm.price) });
-            setModalSuccess('Book created successfully!');
+            setModalSuccess('Buku berhasil dibuat!');
             setBookForm({ isbn: '', title: '', author: '', category_id: '', stock: 5, format: 'Paperback', price: 0 });
             fetchData();
             setTimeout(() => { setShowBookModal(false); setModalSuccess(''); }, 1500);
         } catch (error) {
-            setModalError(error.response?.data?.error || 'Failed to create book');
+            setModalError(error.response?.data?.error || 'Gagal membuat buku');
         }
     };
 
@@ -64,12 +63,12 @@ const AdminDashboard = () => {
         setModalError(''); setModalSuccess('');
         try {
             await userAPI.create(userForm);
-            setModalSuccess('Member registered successfully!');
+            setModalSuccess('Anggota berhasil didaftarkan!');
             setUserForm({ username: '', email: '', password: '', full_name: '', role: 'user' });
             fetchData();
             setTimeout(() => { setShowUserModal(false); setModalSuccess(''); }, 1500);
         } catch (error) {
-            setModalError(error.response?.data?.error || 'Failed to register member');
+            setModalError(error.response?.data?.error || 'Gagal mendaftarkan anggota');
         }
     };
 
@@ -81,22 +80,21 @@ const AdminDashboard = () => {
     };
 
     const statCards = [
-        { label: 'Total Books',    value: stats.totalBooks,   icon: 'menu_book',       color: 'text-primary',           bg: 'bg-primary/10' },
-        { label: 'Active Loans',   value: stats.activeLoans,  icon: 'bookmark_added',  color: 'text-secondary',         bg: 'bg-secondary/10' },
-        { label: 'Overdue Books',  value: stats.overdueLoans, icon: 'priority_high',   color: 'text-error',             bg: 'bg-error/10',  accent: true },
-        { label: 'Total Members',  value: stats.totalUsers,   icon: 'group',           color: 'text-primary-container', bg: 'bg-primary-container/10' },
+        { label: 'Total Buku',       value: stats.totalBooks,   icon: 'menu_book',      color: 'text-primary',    bg: 'bg-primary/10' },
+        { label: 'Peminjaman Aktif', value: stats.activeLoans,  icon: 'bookmark_added', color: 'text-secondary',  bg: 'bg-secondary/10' },
+        { label: 'Buku Terlambat',   value: stats.overdueLoans, icon: 'priority_high',  color: 'text-error',      bg: 'bg-error/10', accent: true },
+        { label: 'Total Anggota',    value: stats.totalUsers,   icon: 'group',          color: 'text-on-surface', bg: 'bg-on-surface/10' },
     ];
 
     return (
         <div className="min-h-screen flex flex-col bg-background">
-            <TopNavBar user={user} />
-            <main className="flex-1 p-lg space-y-lg max-w-7xl mx-auto w-full">
+            <main className="flex-1 p-space-lg space-y-space-lg max-w-7xl mx-auto w-full">
                 <div className="flex justify-between items-center">
                     <div>
-                        <h2 className="text-headline-lg text-on-surface">Admin Dashboard</h2>
-                        <p className="text-body-sm text-on-surface-variant">System oversight, activity audits, and quick library actions</p>
+                        <h2 className="text-headline-lg text-on-surface">Dashboard Admin</h2>
+                        <p className="text-body-sm text-on-surface-variant">Pengawasan sistem, audit aktivitas, dan tindakan cepat perpustakaan</p>
                     </div>
-                    <button onClick={fetchData} className="p-2 bg-surface-container rounded-lg border border-outline-variant/30 hover:bg-surface-container-high transition-colors" title="Refresh">
+                    <button onClick={fetchData} className="p-2 bg-surface-container rounded-lg border border-outline-variant/30 hover:bg-surface-container-high transition-colors" title="Segarkan">
                         <Icon name="refresh" size={20} className="text-on-surface-variant" />
                     </button>
                 </div>
@@ -104,7 +102,7 @@ const AdminDashboard = () => {
                 {/* Stats */}
                 <section className="grid grid-cols-1 md:grid-cols-4 gap-gutter">
                     {statCards.map(({ label, value, icon, color, bg, accent }) => (
-                        <div key={label} className={`bg-surface-container-low p-md rounded-xl border border-outline-variant/10 flex items-center justify-between ${accent ? 'border-l-4 border-error/50' : ''}`}>
+                        <div key={label} className={`bg-surface p-space-md rounded-xl border border-outline-variant/30 flex items-center justify-between ${accent ? 'border-l-4 border-error/50' : ''}`}>
                             <div>
                                 <p className="text-label-md text-on-surface-variant uppercase tracking-wider mb-1">{label}</p>
                                 <p className={`text-headline-xl font-bold ${color}`}>{value}</p>
@@ -116,16 +114,16 @@ const AdminDashboard = () => {
                     ))}
                 </section>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
                     {/* Activity Logs */}
-                    <div className="lg:col-span-8 bg-surface-container-low border border-outline-variant/10 rounded-2xl p-md space-y-md">
+                    <div className="lg:col-span-8 bg-surface border border-outline-variant/30 rounded-2xl p-space-md space-y-space-md">
                         <div className="flex justify-between items-center">
-                            <h3 className="text-headline-md text-on-surface flex items-center gap-xs">
+                            <h3 className="text-headline-md text-on-surface flex items-center gap-space-xs">
                                 <Icon name="history_toggle_off" size={20} className="text-primary" />
-                                System Activity Logs
+                                Log Aktivitas Sistem
                             </h3>
-                            <button onClick={exportLogs} className="text-primary-container hover:underline text-label-md flex items-center gap-xs">
-                                <Icon name="download" size={18} /> Export Logs
+                            <button onClick={exportLogs} className="text-primary-container hover:underline text-label-md flex items-center gap-space-xs font-bold">
+                                <Icon name="download" size={18} /> Ekspor Log
                             </button>
                         </div>
                         {loading ? (
@@ -133,16 +131,16 @@ const AdminDashboard = () => {
                                 <Icon name="sync" size={32} className="text-primary animate-spin" />
                             </div>
                         ) : logs.length === 0 ? (
-                            <p className="text-on-surface-variant text-center py-12">No activity logs recorded yet.</p>
+                            <p className="text-on-surface-variant text-center py-12">Belum ada log aktivitas yang tercatat.</p>
                         ) : (
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left text-body-sm text-on-surface-variant">
                                     <thead>
                                         <tr className="border-b border-outline-variant/20 text-on-surface font-semibold">
-                                            <th className="py-2">User ID</th>
-                                            <th className="py-2">Action</th>
-                                            <th className="py-2">Details</th>
-                                            <th className="py-2 text-right">Time</th>
+                                            <th className="py-2">ID Pengguna</th>
+                                            <th className="py-2">Tindakan</th>
+                                            <th className="py-2">Detail</th>
+                                            <th className="py-2 text-right">Waktu</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-outline-variant/10">
@@ -167,33 +165,33 @@ const AdminDashboard = () => {
                     </div>
 
                     {/* Quick Actions */}
-                    <div className="lg:col-span-4 space-y-lg">
-                        <section className="bg-surface-container-low border border-outline-variant/10 rounded-2xl p-md space-y-md">
-                            <h3 className="text-headline-md text-on-surface">Quick Actions</h3>
-                            <div className="flex flex-col gap-sm">
-                                <button onClick={() => setShowBookModal(true)} className="w-full bg-primary-container text-on-primary font-bold py-3 rounded-lg flex items-center justify-center gap-xs hover:brightness-110 active:scale-95 transition-all text-body-sm">
-                                    <Icon name="add" size={20} /> Add New Book
+                    <div className="lg:col-span-4 space-y-space-lg">
+                        <section className="bg-surface border border-outline-variant/30 rounded-2xl p-space-md space-y-space-md">
+                            <h3 className="text-headline-md text-on-surface font-bold">Tindakan Cepat</h3>
+                            <div className="flex flex-col gap-space-sm">
+                                <button onClick={() => setShowBookModal(true)} className="w-full bg-primary text-on-primary font-bold py-3 rounded-lg flex items-center justify-center gap-space-xs hover:brightness-110 active:scale-95 transition-all text-body-sm">
+                                    <Icon name="add" size={20} /> Tambah Buku Baru
                                 </button>
-                                <button onClick={() => setShowUserModal(true)} className="w-full border border-outline-variant/40 text-on-surface hover:bg-surface-container-high font-bold py-3 rounded-lg flex items-center justify-center gap-xs active:scale-95 transition-all text-body-sm">
-                                    <Icon name="person_add" size={20} /> Register Member
+                                <button onClick={() => setShowUserModal(true)} className="w-full bg-surface border border-outline-variant/50 text-on-surface hover:bg-surface-container-high font-bold py-3 rounded-lg flex items-center justify-center gap-space-xs active:scale-95 transition-all text-body-sm">
+                                    <Icon name="person_add" size={20} className="text-on-surface-variant" /> Daftar Anggota Baru
                                 </button>
-                                <button onClick={() => navigate('/admin/reports')} className="w-full border border-primary/40 text-primary hover:bg-primary/10 font-bold py-3 rounded-lg flex items-center justify-center gap-xs active:scale-95 transition-all text-body-sm">
-                                    <Icon name="analytics" size={20} /> View analytics & reports
+                                <button onClick={() => navigate('/admin/reports')} className="w-full border border-primary/40 text-primary hover:bg-primary/10 font-bold py-3 rounded-lg flex items-center justify-center gap-space-xs active:scale-95 transition-all text-body-sm">
+                                    <Icon name="analytics" size={20} /> Lihat Analitik & Laporan
                                 </button>
                             </div>
                         </section>
 
-                        <section className="bg-surface-container rounded-2xl p-md border border-primary-container/20 relative overflow-hidden">
+                        <section className="bg-surface rounded-2xl p-space-md border border-primary-container/20 relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-primary-container/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-                            <h3 className="text-headline-md text-primary relative z-10">System Status</h3>
-                            <div className="relative z-10 space-y-xs pt-xs">
+                            <h3 className="text-headline-md text-primary relative z-10 font-bold">Status Sistem</h3>
+                            <div className="relative z-10 space-y-space-xs pt-space-xs">
                                 <div className="flex justify-between text-body-sm">
-                                    <span className="text-on-surface-variant">API Server</span>
-                                    <span className="text-primary font-bold">Online</span>
+                                    <span className="text-on-surface-variant">Server API</span>
+                                    <span className="text-primary font-bold">Aktif (Online)</span>
                                 </div>
                                 <div className="flex justify-between text-body-sm">
-                                    <span className="text-on-surface-variant">Database Engine</span>
-                                    <span className="text-primary font-bold">PostgreSQL Connected</span>
+                                    <span className="text-on-surface-variant">Mesin Database</span>
+                                    <span className="text-primary font-bold">PostgreSQL Terhubung</span>
                                 </div>
                             </div>
                         </section>
@@ -203,33 +201,33 @@ const AdminDashboard = () => {
 
             {/* Modal helper */}
             {[
-                { show: showBookModal, onClose: () => setShowBookModal(false), title: 'Add New Book', onSubmit: handleBookSubmit,
+                { show: showBookModal, onClose: () => setShowBookModal(false), title: 'Tambah Buku Baru', onSubmit: handleBookSubmit,
                   fields: [
                     { label: 'ISBN', key: 'isbn', type: 'text', form: bookForm, setForm: setBookForm },
-                    { label: 'Title', key: 'title', type: 'text', form: bookForm, setForm: setBookForm },
-                    { label: 'Author', key: 'author', type: 'text', form: bookForm, setForm: setBookForm },
+                    { label: 'Judul', key: 'title', type: 'text', form: bookForm, setForm: setBookForm },
+                    { label: 'Penulis', key: 'author', type: 'text', form: bookForm, setForm: setBookForm },
                   ],
                   extra: (
                     <div className="grid grid-cols-2 gap-sm">
                         <div>
-                            <label className="block text-label-md mb-1 text-on-surface-variant">Category</label>
+                            <label className="block text-label-md mb-1 text-on-surface-variant">Kategori</label>
                             <select value={bookForm.category_id} onChange={(e) => setBookForm({ ...bookForm, category_id: e.target.value })} required className={selectClass}>
-                                <option value="">Select Category</option>
+                                <option value="">Pilih Kategori</option>
                                 {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                             </select>
                         </div>
                         <div>
-                            <label className="block text-label-md mb-1 text-on-surface-variant">Stock</label>
+                            <label className="block text-label-md mb-1 text-on-surface-variant">Stok</label>
                             <input type="number" value={bookForm.stock} onChange={(e) => setBookForm({ ...bookForm, stock: e.target.value })} required min="1" className={inputClass} />
                         </div>
                     </div>
                   ),
-                  btnLabel: 'Create Book',
+                  btnLabel: 'Buat Buku',
                 },
             ].map(({ show, onClose, title, onSubmit, fields, extra, btnLabel }) =>
                 show ? (
-                    <div key={title} className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-md">
-                        <div className="bg-surface-container-low rounded-2xl border border-outline-variant/30 p-md w-[480px] w-full space-y-md shadow-2xl">
+                    <div key={title} className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-space-md">
+                        <div className="bg-surface rounded-2xl border border-outline-variant/30 p-space-md w-[480px] w-full space-y-space-md shadow-2xl">
                             <div className="flex justify-between items-center">
                                 <h3 className="text-headline-md font-bold text-on-surface">{title}</h3>
                                 <button onClick={onClose} className="text-on-surface-variant hover:text-on-surface">
@@ -238,7 +236,7 @@ const AdminDashboard = () => {
                             </div>
                             {modalError && <div className="bg-error-container/20 text-error p-2.5 rounded-lg text-body-sm border border-error/30">{modalError}</div>}
                             {modalSuccess && <div className="bg-primary-container/20 text-primary p-2.5 rounded-lg text-body-sm border border-primary-container/30">{modalSuccess}</div>}
-                            <form onSubmit={onSubmit} className="space-y-sm">
+                            <form onSubmit={onSubmit} className="space-y-space-sm">
                                 {fields.map(({ label, key, type, form, setForm }) => (
                                     <div key={key}>
                                         <label className="block text-label-md mb-1 text-on-surface-variant">{label}</label>
@@ -246,7 +244,7 @@ const AdminDashboard = () => {
                                     </div>
                                 ))}
                                 {extra}
-                                <button type="submit" className="w-full bg-primary-container text-on-primary font-bold py-2.5 rounded-lg hover:brightness-110 transition-all text-body-sm">{btnLabel}</button>
+                                <button type="submit" className="w-full bg-primary text-on-primary font-bold py-2.5 rounded-lg hover:brightness-110 transition-all text-body-sm">{btnLabel}</button>
                             </form>
                         </div>
                     </div>
@@ -255,20 +253,20 @@ const AdminDashboard = () => {
 
             {/* Register Member Modal */}
             {showUserModal && (
-                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-md">
-                    <div className="bg-surface-container-low rounded-2xl border border-outline-variant/30 p-md w-[480px] w-full space-y-md shadow-2xl">
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-space-md">
+                    <div className="bg-surface rounded-2xl border border-outline-variant/30 p-space-md w-[480px] w-full space-y-space-md shadow-2xl">
                         <div className="flex justify-between items-center">
-                            <h3 className="text-headline-md font-bold text-on-surface">Register Member</h3>
+                            <h3 className="text-headline-md font-bold text-on-surface">Daftar Anggota Baru</h3>
                             <button onClick={() => setShowUserModal(false)} className="text-on-surface-variant hover:text-on-surface">
                                 <Icon name="close" size={22} />
                             </button>
                         </div>
                         {modalError && <div className="bg-error-container/20 text-error p-2.5 rounded-lg text-body-sm border border-error/30">{modalError}</div>}
                         {modalSuccess && <div className="bg-primary-container/20 text-primary p-2.5 rounded-lg text-body-sm border border-primary-container/30">{modalSuccess}</div>}
-                        <form onSubmit={handleUserSubmit} className="space-y-sm">
+                        <form onSubmit={handleUserSubmit} className="space-y-space-sm">
                             {[
-                                { label: 'Full Name', key: 'full_name', type: 'text' },
-                                { label: 'Username',  key: 'username',  type: 'text' },
+                                { label: 'Nama Lengkap', key: 'full_name', type: 'text' },
+                                { label: 'Nama Pengguna',  key: 'username',  type: 'text' },
                                 { label: 'Email',     key: 'email',     type: 'email' },
                             ].map(({ label, key, type }) => (
                                 <div key={key}>
@@ -276,21 +274,21 @@ const AdminDashboard = () => {
                                     <input type={type} value={userForm[key]} onChange={(e) => setUserForm({ ...userForm, [key]: e.target.value })} required className={inputClass} />
                                 </div>
                             ))}
-                            <div className="grid grid-cols-2 gap-sm">
+                            <div className="grid grid-cols-2 gap-space-sm">
                                 <div>
-                                    <label className="block text-label-md mb-1 text-on-surface-variant">Password</label>
+                                    <label className="block text-label-md mb-1 text-on-surface-variant">Kata Sandi</label>
                                     <input type="password" value={userForm.password} onChange={(e) => setUserForm({ ...userForm, password: e.target.value })} required className={inputClass} />
                                 </div>
                                 <div>
-                                    <label className="block text-label-md mb-1 text-on-surface-variant">Role</label>
+                                    <label className="block text-label-md mb-1 text-on-surface-variant">Peran (Role)</label>
                                     <select value={userForm.role} onChange={(e) => setUserForm({ ...userForm, role: e.target.value })} className={selectClass}>
                                         <option value="user">User</option>
                                         <option value="admin">Admin</option>
                                     </select>
                                 </div>
                             </div>
-                            <button type="submit" className="w-full bg-primary-container text-on-primary font-bold py-2.5 rounded-lg hover:brightness-110 transition-all text-body-sm">
-                                Register Member
+                            <button type="submit" className="w-full bg-primary text-on-primary font-bold py-2.5 rounded-lg hover:brightness-110 transition-all text-body-sm">
+                                Dapatkan Anggota
                             </button>
                         </form>
                     </div>
