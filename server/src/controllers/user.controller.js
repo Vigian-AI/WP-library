@@ -105,6 +105,22 @@ class UserController {
             res.status(500).json({ error: error.message });
         }
     }
+
+    async uploadAvatar(req, res) {
+        try {
+            if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+
+            const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+            const user = await userModel.updateAvatar(req.params.id, avatarUrl);
+            if (!user) return res.status(404).json({ error: 'User not found' });
+
+            await systemLogModel.create(req.user?.id, 'UPDATE_AVATAR', { user_id: req.params.id }, req.ip);
+            const { password_hash, ...safeUser } = user;
+            res.json({ ...safeUser, avatar_url: avatarUrl });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
 }
 
 module.exports = new UserController();

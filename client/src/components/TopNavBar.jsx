@@ -68,12 +68,18 @@ const TopNavBar = ({ user, onSearch }) => {
                         onClick={() => setShowDropdown(!showDropdown)}
                         className="flex items-center gap-xs hover:bg-surface-container-high px-2 py-1 transition-all"
                     >
-                        <div className="w-8 h-8 overflow-hidden bg-surface-container-high">
-                            <img
-                                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user?.full_name || 'T')}&background=bfdbfe&color=020617&bold=true&size=36`}
-                                alt={user?.full_name || 'Tamu'}
-                                className="w-full h-full object-cover"
-                            />
+                        <div className="w-8 h-8 rounded-full overflow-hidden bg-primary flex items-center justify-center flex-shrink-0">
+                            {user?.avatar_url ? (
+                                <img
+                                    src={user.avatar_url}
+                                    alt={user?.full_name || 'User'}
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <span className="text-xs font-bold text-on-primary">
+                                    {(user?.full_name || user?.username || 'U').split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase()}
+                                </span>
+                            )}
                         </div>
                         <span className="hidden sm:block text-body-sm font-semibold text-on-surface">
                             {user?.full_name || 'Tamu'}
@@ -85,12 +91,18 @@ const TopNavBar = ({ user, onSearch }) => {
                         <div className="absolute right-0 top-14 w-72 bg-surface rounded-2xl shadow-2xl z-50 border border-outline-variant/20 overflow-hidden">
                             {/* Profile Header */}
                             <div className="bg-gradient-to-br from-primary/10 via-surface-container-low to-surface-container px-space-md py-space-md flex flex-col items-center text-center">
-                                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/30 shadow-md mb-2">
-                                    <img
-                                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user?.full_name || 'T')}&background=8b6f47&color=ffffff&bold=true&size=64`}
-                                        alt={user?.full_name || 'Tamu'}
-                                        className="w-full h-full object-cover"
-                                    />
+                                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/30 shadow-md mb-2 bg-primary flex items-center justify-center">
+                                    {user?.avatar_url ? (
+                                        <img
+                                            src={user.avatar_url}
+                                            alt={user?.full_name || 'User'}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <span className="text-2xl font-bold text-on-primary">
+                                            {(user?.full_name || user?.username || 'U').split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase()}
+                                        </span>
+                                    )}
                                 </div>
                                 <p className="text-body-sm font-bold text-on-surface truncate w-full">{user?.full_name}</p>
                                 <p className="text-label-md text-on-surface-variant truncate w-full">{user?.email}</p>

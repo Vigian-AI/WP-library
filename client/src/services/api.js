@@ -60,6 +60,13 @@ export const userAPI = {
     delete: (id) => api.delete(`/users/${id}`),
     changePassword: (id, data) => api.post(`/users/${id}/password`, data),
     resetPassword: (id) => api.post(`/users/${id}/reset-password`),
+    uploadAvatar: (id, file) => {
+        const formData = new FormData();
+        formData.append('avatar', file);
+        return api.post(`/users/${id}/avatar`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+    },
 };
 
 export const authAPI = {

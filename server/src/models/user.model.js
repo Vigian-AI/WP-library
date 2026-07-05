@@ -42,6 +42,10 @@ class UserModel extends BaseModel {
         return this.update(id, { password_hash: passwordHash });
     }
 
+    async updateAvatar(id, avatarUrl) {
+        return this.update(id, { avatar_url: avatarUrl });
+    }
+
     async changeRole(id, role) {
         return this.update(id, { role });
     }

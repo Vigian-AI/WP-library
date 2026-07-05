@@ -13,6 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api', routes);
 
 app.use('/book-covers', express.static(path.join(__dirname, '../../datasets/book-covers')));
+app.use('/uploads/avatars', express.static(path.join(__dirname, '../uploads/avatars')));
 
 app.get('/', (req, res) => {
     res.json({ message: 'Library API is running' });
