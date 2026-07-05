@@ -90,7 +90,7 @@ const AdminReports = () => {
                                 { label: 'Tingkat Pengembalian',     value: `${returnRate}%`,      color: 'text-primary',           note: 'Dari total transaksi peminjaman' },
                                 { label: 'Tingkat Keterlambatan',    value: `${overdueRate}%`,     color: 'text-error',             note: 'Belum dikembalikan lewat batas waktu' },
                                 { label: 'Total Peminjaman',     value: totalLoansEver,        color: 'text-secondary',         note: 'Catatan historis' },
-                                { label: 'Anggota Aktif',  value: stats.totalUsers,      color: 'text-primary-container', note: 'Terdaftar dalam database' },
+                                { label: 'Anggota Aktif',  value: stats.totalUsers,      color: 'text-secondary', note: 'Terdaftar dalam database' },
                             ].map(({ label, value, color, note }) => (
                                 <div key={label} className="bg-surface p-space-md rounded-xl border border-outline-variant/30 print:border-gray-300 print:bg-white text-center space-y-space-xs shadow-sm">
                                     <p className="text-label-md text-on-surface-variant uppercase tracking-wider print:text-gray-600">{label}</p>

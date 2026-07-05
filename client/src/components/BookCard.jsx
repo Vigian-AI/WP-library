@@ -7,13 +7,12 @@ const BookCard = ({ book, onWishlist, showStatus = true }) => {
     const isAvailable = book.stock > 0;
 
     const coverSrc = book.cover_image_url || `https://placehold.co/300x450?text=${encodeURIComponent(book.title)}`;
+    const [imgSrc, setImgSrc] = useState(coverSrc);
 
     const handleCardClick = (e) => {
         if (e.target.closest('button')) return;
         navigate(`/books/${book.book_id || book.id}`);
     };
-
-    const [imgSrc, setImgSrc] = useState(coverSrc);
 
     const handleImgError = () => {
         setImgSrc(`https://placehold.co/300x450?text=${encodeURIComponent(book.title)}`);
@@ -22,51 +21,49 @@ const BookCard = ({ book, onWishlist, showStatus = true }) => {
     return (
         <article
             onClick={handleCardClick}
-            className="group cursor-pointer flex flex-col overflow-hidden h-full bg-surface transition-all duration-300 hover:shadow-md"
+            className="group cursor-pointer flex flex-col overflow-hidden h-full bg-surface transition-all duration-300 hover:shadow-md rounded-lg"
         >
             {/* Cover */}
-            <div className="relative overflow-hidden bg-surface-container" style={{aspectRatio: '2/3', minHeight: '200px'}}>
+            <div className="relative overflow-hidden bg-surface-container" style={{ aspectRatio: '2/3' }}>
                 <img
                     src={imgSrc}
                     alt={book.title}
-                    className="w-full h-full object-cover transition-all duration-500 group-hover:scale-[1.03]"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                     loading="lazy"
                     onError={handleImgError}
                 />
                 {showStatus && (
-                    <div className={`absolute top-3 right-3 px-2 py-1 text-[10px] font-bold tracking-wide backdrop-blur-md transition-all duration-300 ${
+                    <span className={`absolute bottom-2 left-2 px-2 py-0.5 text-[10px] font-bold tracking-wide rounded backdrop-blur-sm ${
                         isAvailable
-                            ? 'bg-primary/10 text-primary'
-                            : 'bg-surface-container-low/80 text-on-surface-variant'
+                            ? 'bg-primary/80 text-white'
+                            : 'bg-black/40 text-white/80'
                     }`}>
-                        {isAvailable ? 'AVAILABLE' : 'BORROWED'}
-                    </div>
+                        {isAvailable ? 'Tersedia' : 'Dipinjam'}
+                    </span>
                 )}
             </div>
 
             {/* Info */}
-            <div className="p-sm flex flex-col flex-1">
-                <p className="text-body-sm font-bold text-on-surface leading-snug group-hover:text-primary transition-colors line-clamp-2">
+            <div className="p-2 flex flex-col flex-1">
+                <p className="text-xs font-bold text-on-surface leading-snug group-hover:text-primary transition-colors line-clamp-2">
                     {book.title}
                 </p>
-                <p className="text-label-md text-on-surface-variant truncate mt-1">
+                <p className="text-[11px] text-on-surface-variant truncate mt-0.5">
                     {book.author}
                 </p>
-                <div className="mt-auto pt-sm flex justify-between items-center mt-md">
-                    <span className="text-label-md text-on-surface-variant font-medium">
-                        {book.borrow_count || book.rating || '0'} <span className="opacity-70">Reads</span>
+                <div className="mt-auto pt-2 flex items-center justify-between">
+                    <span className="text-[11px] text-on-surface-variant">
+                        {book.borrow_count || book.rating || '0'} <span className="opacity-60">reads</span>
                     </span>
                     {onWishlist && (
                         <Button
                             variant="ghost"
                             size="sm"
                             icon="favorite_border"
-                            className="p-0 min-w-0 h-8 w-8"
+                            className="p-0 min-w-0 h-7 w-7"
                             onClick={(e) => { e.stopPropagation(); onWishlist(book.book_id || book.id); }}
-                            title="Add to wishlist"
-                        >
-                            {/* Empty span to maintain sizing if needed, or just icon */}
-                        </Button>
+                            title="Tambah ke wishlist"
+                        />
                     )}
                 </div>
             </div>

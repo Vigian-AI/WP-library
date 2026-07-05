@@ -118,11 +118,11 @@ const AdminDashboard = () => {
                     {/* Activity Logs */}
                     <div className="lg:col-span-8 bg-surface border border-outline-variant/30 rounded-2xl p-space-md space-y-space-md">
                         <div className="flex justify-between items-center">
-                            <h3 className="text-headline-md text-on-surface flex items-center gap-space-xs">
+                            <h3 className="text-headline-md text-on-surface flex items-center gap-space-xs font-bold">
                                 <Icon name="history_toggle_off" size={20} className="text-primary" />
                                 Log Aktivitas Sistem
                             </h3>
-                            <button onClick={exportLogs} className="text-primary-container hover:underline text-label-md flex items-center gap-space-xs font-bold">
+                            <button onClick={exportLogs} className="text-primary hover:underline text-label-md flex items-center gap-space-xs font-bold">
                                 <Icon name="download" size={18} /> Ekspor Log
                             </button>
                         </div>
@@ -134,30 +134,76 @@ const AdminDashboard = () => {
                             <p className="text-on-surface-variant text-center py-12">Belum ada log aktivitas yang tercatat.</p>
                         ) : (
                             <div className="overflow-x-auto">
-                                <table className="w-full text-left text-body-sm text-on-surface-variant">
+                                <table className="w-full text-left text-sm text-on-surface-variant">
                                     <thead>
-                                        <tr className="border-b border-outline-variant/20 text-on-surface font-semibold">
-                                            <th className="py-2">ID Pengguna</th>
-                                            <th className="py-2">Tindakan</th>
-                                            <th className="py-2">Detail</th>
-                                            <th className="py-2 text-right">Waktu</th>
+                                        <tr className="border-b border-outline-variant/20 text-on-surface font-semibold text-xs uppercase tracking-wider">
+                                            <th className="py-2.5 pr-4">Pengguna</th>
+                                            <th className="py-2.5 pr-4">Tindakan</th>
+                                            <th className="py-2.5 pr-4">Detail</th>
+                                            <th className="py-2.5 text-right">Waktu</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-outline-variant/10">
-                                        {logs.slice(0, 10).map((log) => (
-                                            <tr key={log.id} className="hover:bg-surface-container-high/40 transition-colors">
-                                                <td className="py-2.5 font-bold text-on-surface">U-{log.user_id || 'System'}</td>
-                                                <td className="py-2.5">
-                                                    <span className={`px-2 py-0.5 rounded text-[11px] font-bold ${
-                                                        log.action.includes('CREATE') ? 'bg-primary/20 text-primary' :
-                                                        log.action.includes('DELETE') ? 'bg-error/20 text-error' :
-                                                        log.action.includes('BORROW') ? 'bg-secondary/20 text-secondary' : 'bg-surface-container-highest text-on-surface'
-                                                    }`}>{log.action}</span>
-                                                </td>
-                                                <td className="py-2.5 truncate max-w-xs">{JSON.stringify(log.details)}</td>
-                                                <td className="py-2.5 text-right">{new Date(log.created_at).toLocaleTimeString()}</td>
-                                            </tr>
-                                        ))}
+                                        {logs.slice(0, 10).map((log) => {
+                                            // Parse detail JSON jadi teks yang mudah dibaca
+                                            let detailText = '-';
+                                            try {
+                                                const d = typeof log.details === 'string' ? JSON.parse(log.details) : log.details;
+                                                if (d?.book_id)  detailText = `Buku #${d.book_id}`;
+                                                else if (d?.loan_id)  detailText = `Pinjaman #${d.loan_id}`;
+                                                else if (d?.user_id)  detailText = `Pengguna #${d.user_id}`;
+                                                else if (d && Object.keys(d).length > 0) detailText = Object.entries(d).map(([k,v]) => `${k}: ${v}`).join(', ');
+                                            } catch {}
+
+                                            // Badge warna per jenis aksi
+                                            const actionStyle =
+                                                log.action.includes('CREATE') || log.action.includes('ADD')
+                                                    ? 'bg-primary/15 text-primary'
+                                                : log.action.includes('DELETE') || log.action.includes('REMOVE')
+                                                    ? 'bg-error/15 text-error'
+                                                : log.action.includes('BORROW')
+                                                    ? 'bg-secondary/15 text-secondary'
+                                                : log.action.includes('RETURN')
+                                                    ? 'bg-green-100 text-green-700'
+                                                : log.action.includes('LOGIN')
+                                                    ? 'bg-blue-100 text-blue-600'
+                                                : 'bg-surface-container text-on-surface-variant';
+
+                                            // Format aksi jadi lebih mudah dibaca
+                                            const actionLabel = log.action
+                                                .replace('_', ' ')
+                                                .replace('BORROW', 'PINJAM')
+                                                .replace('RETURN', 'KEMBALI')
+                                                .replace('CREATE', 'BUAT')
+                                                .replace('DELETE', 'HAPUS')
+                                                .replace('BOOK', 'BUKU')
+                                                .replace('USER', 'USER');
+
+                                            // Format tanggal + jam
+                                            const logDate = new Date(log.created_at);
+                                            const dateStr = logDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
+                                            const timeStr = logDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+                                            return (
+                                                <tr key={log.id} className="hover:bg-surface-container/50 transition-colors">
+                                                    <td className="py-2.5 pr-4 font-semibold text-on-surface whitespace-nowrap">
+                                                        U-{log.user_id || '—'}
+                                                    </td>
+                                                    <td className="py-2.5 pr-4">
+                                                        <span className={`px-2 py-0.5 rounded text-[11px] font-bold whitespace-nowrap ${actionStyle}`}>
+                                                            {actionLabel}
+                                                        </span>
+                                                    </td>
+                                                    <td className="py-2.5 pr-4 text-on-surface-variant max-w-[180px] truncate">
+                                                        {detailText}
+                                                    </td>
+                                                    <td className="py-2.5 text-right whitespace-nowrap text-xs">
+                                                        <span className="text-on-surface font-medium">{timeStr}</span>
+                                                        <span className="text-on-surface-variant ml-1">{dateStr}</span>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
                                     </tbody>
                                 </table>
                             </div>
@@ -191,7 +237,7 @@ const AdminDashboard = () => {
                                 </div>
                                 <div className="flex justify-between text-body-sm">
                                     <span className="text-on-surface-variant">Mesin Database</span>
-                                    <span className="text-primary font-bold">PostgreSQL Terhubung</span>
+                                    <span className="text-primary font-bold">MySQL Terhubung</span>
                                 </div>
                             </div>
                         </section>
