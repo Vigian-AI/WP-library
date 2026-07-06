@@ -51,7 +51,7 @@ server/
 │   │   ├── create-users.js      # Seed user default
 │   │   └── create-admin.js      # Buat akun admin
 │   ├── index.js             # Entry point server
-│   └── schema.sql           # Schema database MySQL
+│   └── scripts/schema.sql   # Schema database MySQL
 ├── uploads/
 │   └── avatars/             # Foto profil user
 ├── .env                     # Konfigurasi environment
@@ -82,28 +82,9 @@ JWT_SECRET=wp_library_secret_key_ganti_ini
 ```
 
 ### 3. Setup database
-Buka phpMyAdmin → buat database `wp_library` → import `src/schema.sql`.
+Buka phpMyAdmin → buat database `wp_library` → import `src/scripts/schema.sql`.
 
-Lalu jalankan migration tambahan:
-```sql
--- Migration fitur peminjaman
-SET SESSION sql_mode = '';
-
-ALTER TABLE loans
-    ADD COLUMN IF NOT EXISTS extension_count INT DEFAULT 0,
-    ADD COLUMN IF NOT EXISTS fine_amount DECIMAL(10,2) DEFAULT 0.00,
-    ADD COLUMN IF NOT EXISTS fine_paid TINYINT(1) DEFAULT 0,
-    ADD COLUMN IF NOT EXISTS notes TEXT DEFAULT NULL;
-
-ALTER TABLE loans MODIFY COLUMN status VARCHAR(20) DEFAULT 'pending';
-ALTER TABLE loans DROP CONSTRAINT IF EXISTS chk_loan_status;
-ALTER TABLE loans ADD CONSTRAINT chk_loan_status
-    CHECK (status IN ('pending', 'active', 'returned', 'overdue', 'rejected'));
-
-INSERT IGNORE INTO system_settings (`key`, value, description) VALUES
-    ('max_extensions', '2', 'Maximum number of loan extensions allowed'),
-    ('reminder_days_before', '3', 'Days before due date to send reminder');
-```
+Schema ini sudah mencakup status approval peminjaman, extension count, denda, dan reminder setting. Tidak ada migration SQL tambahan yang perlu dijalankan untuk setup awal.
 
 ### 4. Import data buku
 ```bash
