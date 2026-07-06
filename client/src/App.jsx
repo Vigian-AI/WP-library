@@ -15,6 +15,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminInventory from './pages/admin/AdminInventory';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminReports from './pages/admin/AdminReports';
+import AdminLoans from './pages/admin/AdminLoans';
 
 const AppRoutes = () => {
     const { user, loading } = useAuth();
@@ -38,6 +39,7 @@ const AppRoutes = () => {
                 {/* Admin Routes */}
                 <Route path="admin" element={user?.role === 'admin' ? <AdminDashboard /> : <Navigate to="/" replace />} />
                 <Route path="admin/books" element={user?.role === 'admin' ? <AdminInventory /> : <Navigate to="/" replace />} />
+                <Route path="admin/loans" element={user?.role === 'admin' ? <AdminLoans /> : <Navigate to="/" replace />} />
                 <Route path="admin/users" element={user?.role === 'admin' ? <AdminUsers /> : <Navigate to="/" replace />} />
                 <Route path="admin/reports" element={user?.role === 'admin' ? <AdminReports /> : <Navigate to="/" replace />} />
             </Route>

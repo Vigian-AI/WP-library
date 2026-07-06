@@ -40,8 +40,14 @@ export const loanAPI = {
     return: (loanId) => api.post(`/loans/${loanId}/return`),
     extend: (loanId, days) => api.post(`/loans/${loanId}/extend`, { days }),
     getAllActive: () => api.get('/loans/active'),
+    getPending: () => api.get('/loans/pending'),
     getOverdue: () => api.get('/loans/overdue'),
     getStats: () => api.get('/loans/stats'),
+    approve: (loanId) => api.post(`/loans/${loanId}/approve`),
+    reject: (loanId, reason) => api.post(`/loans/${loanId}/reject`, { reason }),
+    payFine: (loanId) => api.post(`/loans/${loanId}/pay-fine`),
+    sendReminders: () => api.post('/loans/send-reminders'),
+    export: (params) => api.get('/loans/export', { params, responseType: 'blob' }),
 };
 
 export const categoryAPI = {

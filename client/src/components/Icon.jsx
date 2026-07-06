@@ -49,6 +49,18 @@ import {
   MdBarChart,
   MdExpandMore,
   MdImage,
+  MdAssignment,
+  MdAssignmentReturn,
+  MdCheckCircle,
+  MdCancel,
+  MdWarning,
+  MdPending,
+  MdPayments,
+  MdUpdate,
+  MdFilterAlt,
+  MdSort,
+  MdError,
+  MdInfo,
 } from 'react-icons/md';
 
 /**
@@ -77,6 +89,7 @@ const ICON_MAP = {
   inventory_2:          MdInventory2,
   group:                MdGroup,
   analytics:            MdAnalytics,
+  assignment:           MdAssignment,
 
   // Actions
   add:                  MdAdd,
@@ -102,6 +115,17 @@ const ICON_MAP = {
   tune:                 MdTune,
   search_off:           MdSearchOff,
   bar_chart:            MdBarChart,
+  assignment_return:    MdAssignmentReturn,
+  check_circle:         MdCheckCircle,
+  cancel:               MdCancel,
+  warning:              MdWarning,
+  pending:              MdPending,
+  payments:             MdPayments,
+  update:               MdUpdate,
+  filter_alt:           MdFilterAlt,
+  sort:                 MdSort,
+  error:                MdError,
+  info:                 MdInfo,
 };
 
 /**

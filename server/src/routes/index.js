@@ -62,6 +62,7 @@ router.get('/users/:userId/loans/active', authMiddleware.authenticate, loanContr
 router.post('/books/:bookId/borrow', authMiddleware.authenticate, loanController.borrowBook);
 router.post('/loans/:loanId/return', authMiddleware.authenticate, loanController.returnBook);
 router.post('/loans/:loanId/extend', authMiddleware.authenticate, loanController.extendLoan);
+router.post('/loans/:loanId/pay-fine', authMiddleware.authenticate, authMiddleware.authorize(['admin']), loanController.payFine);
 
 router.get('/wishlist', authMiddleware.authenticate, wishlistController.getWishlist);
 router.post('/wishlist/:bookId', authMiddleware.authenticate, wishlistController.addToWishlist);
@@ -78,7 +79,12 @@ router.post('/users/:id/avatar', authMiddleware.authenticate, avatarUpload.singl
 
 router.get('/loans/overdue', authMiddleware.authenticate, authMiddleware.authorize(['admin']), loanController.getOverdueLoans);
 router.get('/loans/active', authMiddleware.authenticate, authMiddleware.authorize(['admin']), loanController.getAllActiveLoans);
+router.get('/loans/pending', authMiddleware.authenticate, authMiddleware.authorize(['admin']), loanController.getPendingLoans);
 router.get('/loans/stats', authMiddleware.authenticate, authMiddleware.authorize(['admin']), loanController.getStats);
+router.get('/loans/export', authMiddleware.authenticate, authMiddleware.authorize(['admin']), loanController.exportLoans);
+router.post('/loans/send-reminders', authMiddleware.authenticate, authMiddleware.authorize(['admin']), loanController.sendReminders);
+router.post('/loans/:loanId/approve', authMiddleware.authenticate, authMiddleware.authorize(['admin']), loanController.approveLoan);
+router.post('/loans/:loanId/reject', authMiddleware.authenticate, authMiddleware.authorize(['admin']), loanController.rejectLoan);
 
 router.get('/logs', authMiddleware.authenticate, authMiddleware.authorize(['admin']), async (req, res) => {
     try {

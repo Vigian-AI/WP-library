@@ -12,6 +12,7 @@ const SideNavBar = () => {
             { path: '/',              icon: 'menu_book',            label: 'Tampilan Perpustakaan' },
             { path: '/admin',         icon: 'dashboard',            label: 'Dashboard' },
             { path: '/admin/books',   icon: 'inventory_2',          label: 'Inventaris' },
+            { path: '/admin/loans',   icon: 'assignment',           label: 'Peminjaman' },
             { path: '/admin/users',   icon: 'group',                label: 'Anggota' },
             { path: '/admin/reports', icon: 'analytics',            label: 'Laporan' },
             { path: '/settings',      icon: 'settings',             label: 'Pengaturan' },
