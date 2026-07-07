@@ -45,15 +45,20 @@ const Dashboard = () => {
             <main className="flex-1 p-lg lg:px-xl lg:py-xl max-w-[var(--width-app)] mx-auto w-full space-y-xl">
 
                 {/* Hero Section */}
-                <section className="relative overflow-hidden h-[300px] flex items-start pt-10 px-lg bg-gradient-to-br from-primary/10 via-surface-container-low to-surface-container shadow-sm">
+                <section className="relative overflow-hidden h-[300px] flex items-start pt-10 px-10 bg-gradient-to-br from-primary/10 via-surface-container-low to-surface-container shadow-sm">
                     <div className="max-w-2xl space-y-md relative z-10">
                         <h2 className="text-[48px] leading-tight font-bold text-primary">
-                            Selamat datang kembali, {user?.full_name?.split(' ')[0] || 'Tamu'}!
+                            Selamat Datang di Perpustakaan Digital
                         </h2>
                         <p className="text-[18px] text-on-surface-variant max-w-lg">
-                            Lanjutkan petualangan Anda di dunia pengetahuan. Saat ini Anda sedang meminjam{' '}
-                            <span className="text-on-surface font-bold">{borrowedBooks.length}</span>{' '}
-                            buku.
+                            Temukan, pinjam, dan nikmati ribuan koleksi buku dari mana saja.{' '}
+                            {borrowedBooks.length > 0 && (
+                                <>
+                                    Saat ini Anda sedang meminjam{' '}
+                                    <span className="text-on-surface font-bold">{borrowedBooks.length}</span>{' '}
+                                    buku.
+                                </>
+                            )}
                         </p>
                         <div className="flex flex-wrap gap-4 pt-sm">
                             <Button
@@ -73,9 +78,9 @@ const Dashboard = () => {
                             </Button>
                         </div>
                     </div>
-                    {/* Decorative Element/Illustration Placeholder */}
+                    {/* Decorative Element */}
                     <div className="absolute right-0 top-0 bottom-0 w-1/2 opacity-10 pointer-events-none flex items-center justify-center">
-                         <Icon name="auto_stories" size={260} className="text-primary" />
+                        <Icon name="auto_stories" size={260} className="text-primary" />
                     </div>
                 </section>
 
