@@ -17,12 +17,16 @@ const BookDetail = () => {
     useEffect(() => {
         const fetchBook = async () => {
             try {
-                const [bookRes, similarRes] = await Promise.all([
-                    bookAPI.getById(id),
-                    bookAPI.getSimilar(id, 5)
-                ]);
+                const bookRes = await bookAPI.getById(id);
                 setBook(bookRes.data);
-                setSimilarBooks(similarRes.data || []);
+
+                try {
+                    const similarRes = await bookAPI.getSimilar(id, 5);
+                    setSimilarBooks(similarRes.data || []);
+                } catch (similarError) {
+                    console.error('Error fetching similar books:', similarError);
+                    setSimilarBooks([]);
+                }
             } catch (error) {
                 console.error('Error fetching book:', error);
             } finally {

@@ -79,14 +79,18 @@ class BookModel extends BaseModel {
         if (!bookResult.rows[0]) return [];
 
         const book = bookResult.rows[0];
-        const categoryId = book.category_id;
+        if (!book.category_id) return [];
+
+        const categoryId = Number(book.category_id);
+        const safeBookId = Number(bookId);
+        const safeLimit = Math.max(1, parseInt(limit, 10) || 5);
 
         const result = await this.db.query(`
             SELECT * FROM books
             WHERE category_id = ? AND id != ?
             ORDER BY rating DESC
-            LIMIT ?
-        `, [categoryId, bookId, limit]);
+            LIMIT ${safeLimit}
+        `, [categoryId, safeBookId]);
         return result.rows;
     }
 
